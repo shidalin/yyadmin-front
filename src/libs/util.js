@@ -2,6 +2,9 @@ import axios from 'axios';
 import env from '../../build/env';
 import semver from 'semver';
 import packjson from '../../package.json';
+import Vue from 'vue';
+import Cookies from 'js-cookie';
+import iView from 'iview';
 
 let util = {
 
@@ -12,7 +15,7 @@ util.title = function (title) {
 };
 
 const ajaxUrl = env === 'development'
-    ? 'http://127.0.0.1:8888'
+    ? 'http://127.0.0.1:8888/api'
     : env === 'production'
         ? 'https://www.url.com'
         : 'https://debug.url.com';
@@ -21,6 +24,41 @@ util.ajax = axios.create({
     baseURL: ajaxUrl,
     timeout: 30000
 });
+
+// 拦截器处理
+// 添加一个请求拦截器
+util.ajax.interceptors.request.use(function (config) {
+    // 在请求发送之前做一些事
+    // `headers`选项是需要被发送的自定义请求头信息
+    // Cookies缓存获取jwt
+    let jwt = Cookies.get('jwt');
+    // 设置jwt头
+    config.headers = {
+        'jwt': jwt
+    };
+    // `withCredentails`选项表明了是否是跨域请求
+    config.withCredentials = true;
+    return config;
+}, function (error) {
+    // 当出现请求错误是做一些事
+    return Promise.reject(error);
+});
+// 添加一个返回拦截器
+util.ajax.interceptors.response.use(function (response) {
+    // 对返回的数据进行一些处理
+    if (response.data.code === 200) {
+        iView.Message.info(response.data.message);
+    } else {
+        iView.Message.error(response.data.message);
+    }
+    return response;
+}, function (error) {
+    // 对返回的错误进行一些处理
+    return Promise.reject(error);
+});
+
+// 添加axios实例到vue原型属性，避免过多重复import
+Vue.prototype.$http = util.ajax;
 
 util.inOf = function (arr, targetArr) {
     let res = true;

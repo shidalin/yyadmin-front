@@ -47,3 +47,61 @@ module.exports = merge(webpackBaseConfig, {
         })
     ]
 });
+
+/**********************跨域请求虚拟服务器设置************************************/
+/**
+ * cors跨域解决方案
+ * 1.前端访问node服务器：浏览器访问地址http://localhost:8080
+ * 2.前端访问服务器接口请求API数据，产生跨域访问问题
+ * 3.增加express服务进行请求代理转发，配置跨域相关配置
+ * 4.增加htp-proxy-middleware请求中间件，配置代理相关配置
+ * 5.访问流程：前端访问虚拟服务器express，虚拟服务器express对前端请求进行代理转发，访问实际后端
+ */
+//服务端模拟转发请求，使用expres
+var express = require('express');
+var app = express();
+//虚拟服务器设置跨域访问
+app.all('*', function (req, res, next) {
+    res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Headers', 'X-Requested-With');
+    res.header('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS');
+    res.header('X-Powered-By', ' 3.2.1');
+    res.header('Content-Type', 'application/json;charset=utf-8');
+    next();
+});
+
+//代理请求中间件
+var proxyMiddleware = require('http-proxy-middleware');
+
+//代理转发配置：远程服务器实际访问地址
+var proxyTable = {
+    '/api': { //用 （/api）代替 （http://127.0.0.1:8080/api）
+        target: "http://127.0.0.1:8089",
+        changeOrigin: true, //是否跨域
+        pathRewrite: {
+            '/api': '' //路径重写，替换 （/api）,替换后实际访问地址为（http://127.0.0.1:8089）
+        }
+    }
+};
+
+Object.keys(proxyTable).forEach(function (context) {
+    var options = proxyTable[context]
+    if (typeof options === 'string') {
+        options = {
+            target: options
+        };
+    }
+    app.use(proxyMiddleware(options.filter || context, options))
+})
+
+//启动虚拟服务器(中间层)
+var server = app.listen(8888, function () {
+    var host = server
+        .address()
+        .address;
+    var port = server
+        .address()
+        .port;
+    console.log('app listening at http://%s:%s', host, port);
+});
