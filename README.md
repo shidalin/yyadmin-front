@@ -1,20 +1,6 @@
-# YYAdmin
-## Install
-```bush
-// install dependencies
-npm install
-```
-## Run
-### Development
-```bush
-npm run dev
-```
-### Production(Build)
-```bush
-npm run build
-```
+# YYAdmin 管理系统前端
 
-## 文件结构
+## 1.文件结构
 ```shell
 .
 ├── build  项目构建配置
@@ -34,4 +20,8 @@ npm run build
         ├── home  首页
         ├── main-components  主组件
         ├── page  一级目录页面
-```
+```  
+## 2.功能设计  
+###  2.1权限设计  
+1.登录时后台认证授权，返回jwt,存储至Cookie；    
+2.解析jwt,判断router的accessCode是否有权限(Util.showThisRoute)；  

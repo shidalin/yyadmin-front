@@ -37,12 +37,11 @@ const app = {
         setTagsList (state, list) {
             state.tagsList.push(...list);
         },
-        updateMenulist (state) {
-            let accessCode = parseInt(Cookies.get('access'));
+        updateMenulist (state) { // 更新菜单
             let menuList = [];
             appRouter.forEach((item, index) => {
                 if (item.access !== undefined) {
-                    if (Util.showThisRoute(item.access, accessCode)) {
+                    if (Util.showThisRoute(item.access)) { // 权限控制
                         if (item.children.length === 1) {
                             menuList.push(item);
                         } else {
@@ -50,7 +49,7 @@ const app = {
                             let childrenArr = [];
                             childrenArr = item.children.filter(child => {
                                 if (child.access !== undefined) {
-                                    if (child.access === accessCode) {
+                                    if (Util.showThisRoute(child.access)) {
                                         return child;
                                     }
                                 } else {
@@ -68,7 +67,7 @@ const app = {
                         let childrenArr = [];
                         childrenArr = item.children.filter(child => {
                             if (child.access !== undefined) {
-                                if (Util.showThisRoute(child.access, accessCode)) {
+                                if (Util.showThisRoute(child.access)) {
                                     return child;
                                 }
                             } else {

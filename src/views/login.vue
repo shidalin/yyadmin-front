@@ -48,20 +48,16 @@ export default {
         password: ""
       },
       rules: {
-        userName: [
-          {
-            required: true,
-            message: "账号不能为空",
-            trigger: "blur"
-          }
-        ],
-        password: [
-          {
-            required: true,
-            message: "密码不能为空",
-            trigger: "blur"
-          }
-        ]
+        userName: [{
+          required: true,
+          message: "账号不能为空",
+          trigger: "blur"
+        }],
+        password: [{
+          required: true,
+          message: "密码不能为空",
+          trigger: "blur"
+        }]
       }
     };
   },
@@ -80,6 +76,8 @@ export default {
               Cookies.set("user", self.form.userName);
               // cookie存储jwt
               Cookies.set("jwt", response.data.data.jwt);
+              //cookie存储菜单
+              Cookies.set("menus", response.data.data.menus);
               self.$store.commit(
                 "setAvator",
                 "https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3448484253,3685836170&fm=27&gp=0.jpg"

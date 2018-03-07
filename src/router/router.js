@@ -1,4 +1,5 @@
 import Main from '@/views/Main.vue';
+import workflow from './workflow';
 
 // 不作为Main组件的子页面展示的页面单独写，如下
 export const loginRouter = {
@@ -7,7 +8,8 @@ export const loginRouter = {
     meta: {
         title: 'Login - 登录'
     },
-    component: () => import('@/views/login.vue')
+    component: () =>
+        import ('@/views/login.vue')
 };
 
 export const page404 = {
@@ -16,7 +18,8 @@ export const page404 = {
     meta: {
         title: '404-页面不存在'
     },
-    component: () => import('@/views/error-page/404.vue')
+    component: () =>
+        import ('@/views/error-page/404.vue')
 };
 
 export const page403 = {
@@ -25,7 +28,8 @@ export const page403 = {
         title: '403-权限不足'
     },
     name: 'error-403',
-    component: () => import('@//views/error-page/403.vue')
+    component: () =>
+        import ('@//views/error-page/403.vue')
 };
 
 export const page500 = {
@@ -34,19 +38,22 @@ export const page500 = {
         title: '500-服务端错误'
     },
     name: 'error-500',
-    component: () => import('@/views/error-page/500.vue')
+    component: () =>
+        import ('@/views/error-page/500.vue')
 };
 
 export const preview = {
     path: '/preview',
     name: 'preview',
-    component: () => import('@/views/form/article-publish/preview.vue')
+    component: () =>
+        import ('@/views/form/article-publish/preview.vue')
 };
 
 export const locking = {
     path: '/locking',
     name: 'locking',
-    component: () => import('@/views/main-components/lockscreen/components/locking-page.vue')
+    component: () =>
+        import ('@/views/main-components/lockscreen/components/locking-page.vue')
 };
 
 // 作为Main组件的子页面展示但是不在左侧菜单显示的路由写在otherRouter里
@@ -55,47 +62,94 @@ export const otherRouter = {
     name: 'otherRouter',
     redirect: '/home',
     component: Main,
-    children: [
-        { path: 'home', title: {i18n: 'home'}, name: 'home_index', component: () => import('@/views/home/home.vue') },
-        { path: 'ownspace', title: '个人中心', name: 'ownspace_index', component: () => import('@/views/own-space/own-space.vue') },
-        { path: 'order/:order_id', title: '订单详情', name: 'order-info', component: () => import('@/views/advanced-router/component/order-info.vue') }, // 用于展示动态路由
-        { path: 'shopping', title: '购物详情', name: 'shopping', component: () => import('@/views/advanced-router/component/shopping-info.vue') }, // 用于展示带参路由
-        { path: 'message', title: '消息中心', name: 'message_index', component: () => import('@/views/message/message.vue') }
+    children: [{
+            path: 'home',
+            title: {
+                i18n: 'home'
+            },
+            name: 'home_index',
+            component: () =>
+                import ('@/views/home/home.vue')
+        },
+        {
+            path: 'ownspace',
+            title: '个人中心',
+            name: 'ownspace_index',
+            component: () =>
+                import ('@/views/own-space/own-space.vue')
+        },
+        {
+            path: 'order/:order_id',
+            title: '订单详情',
+            name: 'order-info',
+            component: () =>
+                import ('@/views/advanced-router/component/order-info.vue')
+        }, // 用于展示动态路由
+        {
+            path: 'shopping',
+            title: '购物详情',
+            name: 'shopping',
+            component: () =>
+                import ('@/views/advanced-router/component/shopping-info.vue')
+        }, // 用于展示带参路由
+        {
+            path: 'message',
+            title: '消息中心',
+            name: 'message_index',
+            component: () =>
+                import ('@/views/message/message.vue')
+        }
     ]
 };
 
 // 作为Main组件的子页面展示并且在左侧菜单显示的路由写在appRouter里
-export const appRouter = [
-    {
+export const appRouter = [{
         path: '/access',
         icon: 'key',
         name: 'access',
         title: '权限管理',
         component: Main,
-        children: [
-            { path: 'index', title: '权限管理', name: 'access_index', component: () => import('@/views/access/access.vue') }
-        ]
+        children: [{
+            path: 'index',
+            title: '权限管理',
+            name: 'access_index',
+            component: () =>
+                import ('@/views/access/access.vue')
+        }]
     },
     {
         path: '/access-test',
         icon: 'lock-combination',
         title: '权限测试页',
         name: 'accesstest',
-        access: 0,
+        access: 'access',
         component: Main,
-        children: [
-            { path: 'index', title: '权限测试页', name: 'accesstest_index', access: 0, component: () => import('@/views/access/access-test.vue') }
-        ]
+        children: [{
+            path: 'index',
+            title: '权限测试页',
+            name: 'accesstest_index',
+            access: 0,
+            component: () =>
+                import ('@/views/access/access-test.vue')
+        }]
     },
     {
         path: '/international',
         icon: 'earth',
-        title: {i18n: 'international'},
+        title: {
+            i18n: 'international'
+        },
         name: 'international',
         component: Main,
-        children: [
-            { path: 'index', title: {i18n: 'international'}, name: 'international_index', component: () => import('@/views/international/international.vue') }
-        ]
+        children: [{
+            path: 'index',
+            title: {
+                i18n: 'international'
+            },
+            name: 'international_index',
+            component: () =>
+                import ('@/views/international/international.vue')
+        }]
     },
     {
         path: '/component',
@@ -103,63 +157,69 @@ export const appRouter = [
         name: 'component',
         title: '组件',
         component: Main,
-        children: [
-            {
+        children: [{
                 path: 'text-editor',
                 icon: 'compose',
                 name: 'text-editor',
                 title: '富文本编辑器',
-                component: () => import('@/views/my-components/text-editor/text-editor.vue')
+                component: () =>
+                    import ('@/views/my-components/text-editor/text-editor.vue')
             },
             {
                 path: 'md-editor',
                 icon: 'pound',
                 name: 'md-editor',
                 title: 'Markdown编辑器',
-                component: () => import('@/views/my-components/markdown-editor/markdown-editor.vue')
+                component: () =>
+                    import ('@/views/my-components/markdown-editor/markdown-editor.vue')
             },
             {
                 path: 'image-editor',
                 icon: 'crop',
                 name: 'image-editor',
                 title: '图片预览编辑',
-                component: () => import('@/views/my-components/image-editor/image-editor.vue')
+                component: () =>
+                    import ('@/views/my-components/image-editor/image-editor.vue')
             },
             {
                 path: 'draggable-list',
                 icon: 'arrow-move',
                 name: 'draggable-list',
                 title: '可拖拽列表',
-                component: () => import('@/views/my-components/draggable-list/draggable-list.vue')
+                component: () =>
+                    import ('@/views/my-components/draggable-list/draggable-list.vue')
             },
             {
                 path: 'area-linkage',
                 icon: 'ios-more',
                 name: 'area-linkage',
                 title: '城市级联',
-                component: () => import('@/views/my-components/area-linkage/area-linkage.vue')
+                component: () =>
+                    import ('@/views/my-components/area-linkage/area-linkage.vue')
             },
             {
                 path: 'file-upload',
                 icon: 'android-upload',
                 name: 'file-upload',
                 title: '文件上传',
-                component: () => import('@/views/my-components/file-upload/file-upload.vue')
+                component: () =>
+                    import ('@/views/my-components/file-upload/file-upload.vue')
             },
             {
                 path: 'count-to',
                 icon: 'arrow-graph-up-right',
                 name: 'count-to',
                 title: '数字渐变',
-                // component: () => import('@/views/my-components/count-to/count-to.vue')
-                component: () => import('@/views/my-components/count-to/count-to.vue')
+                component: () =>
+                    import ('@/views/my-components/count-to/count-to.vue')
             },
             {
                 path: 'split-pane-page',
                 icon: 'ios-pause',
                 name: 'split-pane-page',
                 title: 'split-pane',
-                component: () => import('@/views/my-components/split-pane/split-pane-page.vue')
+                component: () =>
+                    import ('@/views/my-components/split-pane/split-pane-page.vue')
             }
         ]
     },
@@ -169,36 +229,71 @@ export const appRouter = [
         name: 'form',
         title: '表单编辑',
         component: Main,
-        children: [
-            { path: 'artical-publish', title: '文章发布', name: 'artical-publish', icon: 'compose', component: () => import('@/views/form/article-publish/article-publish.vue') },
-            { path: 'workflow', title: '工作流', name: 'workflow', icon: 'arrow-swap', component: () => import('@/views/form/work-flow/work-flow.vue') }
+        children: [{
+                path: 'artical-publish',
+                title: '文章发布',
+                name: 'artical-publish',
+                icon: 'compose',
+                component: () =>
+                    import ('@/views/form/article-publish/article-publish.vue')
+            },
+            {
+                path: 'workflow',
+                title: '工作流',
+                name: 'workflow',
+                icon: 'arrow-swap',
+                component: () =>
+                    import ('@/views/form/work-flow/work-flow.vue')
+            }
 
         ]
     },
-    // {
-    //     path: '/charts',
-    //     icon: 'ios-analytics',
-    //     name: 'charts',
-    //     title: '图表',
-    //     component: Main,
-    //     children: [
-    //         { path: 'pie', title: '饼状图', name: 'pie', icon: 'ios-pie', component: resolve => { require('@/views/access/access.vue') },
-    //         { path: 'histogram', title: '柱状图', name: 'histogram', icon: 'stats-bars', component: resolve => { require('@/views/access/access.vue') }
-
-    //     ]
-    // },
     {
         path: '/tables',
         icon: 'ios-grid-view',
         name: 'tables',
         title: '表格',
         component: Main,
-        children: [
-            { path: 'dragableTable', title: '可拖拽排序', name: 'dragable-table', icon: 'arrow-move', component: () => import('@/views/tables/dragable-table.vue') },
-            { path: 'editableTable', title: '可编辑表格', name: 'editable-table', icon: 'edit', component: () => import('@/views/tables/editable-table.vue') },
-            { path: 'searchableTable', title: '可搜索表格', name: 'searchable-table', icon: 'search', component: () => import('@/views/tables/searchable-table.vue') },
-            { path: 'exportableTable', title: '表格导出数据', name: 'exportable-table', icon: 'code-download', component: () => import('@/views/tables/exportable-table.vue') },
-            { path: 'table2image', title: '表格转图片', name: 'table-to-image', icon: 'images', component: () => import('@/views/tables/table-to-image.vue') }
+        children: [{
+                path: 'dragableTable',
+                title: '可拖拽排序',
+                name: 'dragable-table',
+                icon: 'arrow-move',
+                component: () =>
+                    import ('@/views/tables/dragable-table.vue')
+            },
+            {
+                path: 'editableTable',
+                title: '可编辑表格',
+                name: 'editable-table',
+                icon: 'edit',
+                component: () =>
+                    import ('@/views/tables/editable-table.vue')
+            },
+            {
+                path: 'searchableTable',
+                title: '可搜索表格',
+                name: 'searchable-table',
+                icon: 'search',
+                component: () =>
+                    import ('@/views/tables/searchable-table.vue')
+            },
+            {
+                path: 'exportableTable',
+                title: '表格导出数据',
+                name: 'exportable-table',
+                icon: 'code-download',
+                component: () =>
+                    import ('@/views/tables/exportable-table.vue')
+            },
+            {
+                path: 'table2image',
+                title: '表格转图片',
+                name: 'table-to-image',
+                icon: 'images',
+                component: () =>
+                    import ('@/views/tables/table-to-image.vue')
+            }
         ]
     },
     {
@@ -207,9 +302,22 @@ export const appRouter = [
         name: 'advanced-router',
         title: '高级路由',
         component: Main,
-        children: [
-            { path: 'mutative-router', title: '动态路由', name: 'mutative-router', icon: 'link', component: () => import('@/views/advanced-router/mutative-router.vue') },
-            { path: 'argument-page', title: '带参页面', name: 'argument-page', icon: 'android-send', component: () => import('@/views/advanced-router/argument-page.vue') }
+        children: [{
+                path: 'mutative-router',
+                title: '动态路由',
+                name: 'mutative-router',
+                icon: 'link',
+                component: () =>
+                    import ('@/views/advanced-router/mutative-router.vue')
+            },
+            {
+                path: 'argument-page',
+                title: '带参页面',
+                name: 'argument-page',
+                icon: 'android-send',
+                component: () =>
+                    import ('@/views/advanced-router/argument-page.vue')
+            }
         ]
     },
     {
@@ -218,8 +326,164 @@ export const appRouter = [
         title: '错误页面',
         name: 'errorpage',
         component: Main,
-        children: [
-            { path: 'index', title: '错误页面', name: 'errorpage_index', component: () => import('@/views/error-page/error-page.vue') }
+        children: [{
+            path: 'index',
+            title: '错误页面',
+            name: 'errorpage_index',
+            component: () =>
+                import ('@/views/error-page/error-page.vue')
+        }]
+    },
+    {
+        path: '/process_definition',
+        icon: 'key',
+        name: 'process_definition',
+        title: '流程管理',
+        component: Main,
+        children: [{
+            path: 'workflow_process_definition',
+            title: '流程定义',
+            access: 'workflow_process_definition',
+            name: 'process_definition_index',
+            component: () =>
+                import ('@/views/modules/workflow/processDefinition.vue')
+        }]
+    },
+    {
+        path: '/system',
+        icon: 'key',
+        name: 'system',
+        title: '系统管理',
+        component: Main,
+        children: [{
+                path: 'user',
+                title: '用户',
+                access: 'system_user',
+                name: 'system_user',
+                component: () =>
+                    import ('@/views/modules/system/user.vue')
+            },
+            {
+                path: 'role',
+                title: '角色',
+                access: 'system_role',
+                name: 'system_role',
+                component: () =>
+                    import ('@/views/modules/system/role.vue')
+            },
+            {
+                path: 'menu',
+                title: '菜单',
+                access: 'system_menu',
+                name: 'system_menu',
+                component: () =>
+                    import ('@/views/modules/system/menu.vue')
+            },
+            {
+                path: 'organization',
+                title: '组织',
+                access: 'system_organization',
+                name: 'system_organization',
+                component: () =>
+                    import ('@/views/modules/system/organization.vue')
+            },
+            {
+                path: 'user_role',
+                title: '用户角色',
+                access: 'system_user_role',
+                name: 'system_user_role',
+                component: () =>
+                    import ('@/views/modules/system/userRole.vue')
+            },
+            {
+                path: 'role_menu',
+                title: '角色菜单',
+                access: 'system_role_menu',
+                name: 'system_role_menu',
+                component: () =>
+                    import ('@/views/modules/system/roleMenu.vue')
+            },
+            {
+                path: 'system_log',
+                title: '系统日志',
+                access: 'system_log',
+                name: 'system_log',
+                component: () =>
+                    import ('@/views/modules/system/systemLog.vue')
+            },
+            {
+                path: 'system_druid',
+                title: '数据库分析',
+                access: 'system_druid',
+                name: 'system_druid',
+                component: () =>
+                    import ('@/views/modules/system/druid.vue')
+            }
+        ]
+    },
+    {
+        path: '/busi',
+        icon: 'key',
+        name: 'busi',
+        title: '业务管理',
+        component: Main,
+        children: [{
+                path: 'busi_project',
+                title: '项目',
+                access: 'busi_proejct',
+                name: 'busi_project',
+                component: () =>
+                    import ('@/views/modules/busi/project.vue')
+            },
+            {
+                path: 'busi_requirement',
+                icon: 'fa-commenting-o',
+                title: '需求',
+                access: 'busi_requirement',
+                name: 'busi_requirement',
+                component: () =>
+                    import ('@/views/modules/busi/requirement.vue')
+            },
+            {
+                path: 'busi_bug',
+                title: 'BUG',
+                access: 'busi_bug',
+                name: 'busi_bug',
+                component: () =>
+                    import ('@/views/modules/busi/bug.vue')
+            },
+            {
+                path: 'busi_proplan',
+                title: '计划',
+                access: 'busi_proplan',
+                name: 'busi_proplan',
+                component: () =>
+                    import ('@/views/modules/busi/proplan.vue')
+            },
+            {
+                path: 'busi_document',
+                title: '文档',
+                access: 'busi_document',
+                name: 'busi_document',
+                component: () =>
+                    import ('@/views/modules/busi/document.vue')
+            },
+            {
+                path: 'busi_project_user',
+                title: '项目分配',
+                access: 'busi_project_user',
+                name: 'busi_project_user',
+                component: () =>
+                    import ('@/views/modules/busi/projectUser.vue')
+            },
+            {
+                path: 'busi_requirement_user',
+                title: '需求分配',
+                access: 'busi_requirement_user',
+                name: 'busi_requirement_user',
+                component: () =>
+                    import ('@/views/modules/busi/requirementUser.vue')
+            }
         ]
     }
 ];
