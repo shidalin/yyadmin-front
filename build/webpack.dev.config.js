@@ -60,11 +60,14 @@ module.exports = merge(webpackBaseConfig, {
 //服务端模拟转发请求，使用expres
 var express = require('express');
 var app = express();
-//虚拟服务器设置跨域访问
+//虚拟服务器转发请求到实际后台服务器
 app.all('*', function (req, res, next) {
+    //跨域允许的客户端IP
     res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
     res.header('Access-Control-Allow-Credentials', 'true');
-    res.header('Access-Control-Allow-Headers', 'X-Requested-With');
+    //跨域允许的请求头
+    res.header('Access-Control-Allow-Headers', 'X-Requested-With,Authorization,Content-Type');
+    //跨域允许的方法类型
     res.header('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS');
     res.header('X-Powered-By', ' 3.2.1');
     res.header('Content-Type', 'application/json;charset=utf-8');

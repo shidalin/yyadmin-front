@@ -23,5 +23,6 @@
 ```  
 ## 2.功能设计  
 ###  2.1权限设计  
-1.登录时后台认证授权，返回jwt,存储至Cookie；    
+1.登录时后台认证授权，返回jwt,存储至localStorage，避免cookie数据泄露；    
 2.解析jwt,判断router的accessCode是否有权限(Util.showThisRoute)；  
+3.

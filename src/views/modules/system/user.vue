@@ -84,137 +84,168 @@
   </div>
 </template>
 <script>
-import Util from '../../../libs/util';
-import Vue from 'vue';
+import Vue from "vue";
 export default {
   data() {
-    let tableColumns = [{
-      type: 'selection',
-      width: 60,
-      // align: 'center',
-      fixed: 'left'
-    }, {
-      title: '#',
-      key: 'id',
-      width: '60'
-    },
-    {
-      title: '用户名',
-      key: 'userName'
-    },
-    {
-      title: '用户编码',
-      key: 'userCode'
-    },
-    {
-      title: '用户邮箱',
-      key: 'userEmail',
-      width: '200'
-    },
-    {
-      title: '用户电话',
-      key: 'userPhone'
-    },
-    {
-      title: '用户类型',
-      key: 'userType',
-      render: (h, params) => {
-        const row = params.row;
-        const color = row.userType === '0' ? 'blue' : row.userType === '1' ? 'green' : 'red';
-        const text = row.userType === '0' ? '普通用户' : row.userType === '1' ? '管理员用户' : '未知状态';
-        return h('Tag', {
-          props: {
-            type: 'dot',
-            color: color
-          }
-        }, text);
-      }
-    },
-    {
-      title: '用户状态',
-      key: 'status',
-      render: (h, params) => {
-        const row = params.row;
-        const color = row.status ? 'blue' : 'green';
-        const text = row.status ? '暂停状态' : '正常状态';
-        return h('Tag', {
-          props: {
-            type: 'dot',
-            color: color
-          }
-        }, text);
-      }
-    },
-    {
-      title: '创建时间',
-      key: 'gmtCreate',
-      width: '150'
-    },
-    {
-      title: '最后修改时间',
-      key: 'gmtModified'
-    },
-    {
-      title: '操作',
-      key: 'action',
-      width: 150,
-      align: 'center',
-      render: (h, params) => {
-        return h('div', [
-          h('Tooltip', {
-            props: {
-              content: '编辑'
-            }
-          }, [
-              h('Button', {
+    let tableColumns = [
+      {
+        type: "selection",
+        width: 60,
+        // align: 'center',
+        fixed: "left"
+      },
+      {
+        title: "#",
+        key: "id",
+        width: "60"
+      },
+      {
+        title: "用户名",
+        key: "userName"
+      },
+      {
+        title: "用户编码",
+        key: "userCode"
+      },
+      {
+        title: "用户邮箱",
+        key: "userEmail",
+        width: "200"
+      },
+      {
+        title: "用户电话",
+        key: "userPhone"
+      },
+      {
+        title: "用户类型",
+        key: "userType",
+        render: (h, params) => {
+          const row = params.row;
+          const color =
+            row.userType === "0"
+              ? "blue"
+              : row.userType === "1" ? "green" : "red";
+          const text =
+            row.userType === "0"
+              ? "普通用户"
+              : row.userType === "1" ? "管理员用户" : "未知状态";
+          return h(
+            "Tag",
+            {
+              props: {
+                type: "dot",
+                color: color
+              }
+            },
+            text
+          );
+        }
+      },
+      {
+        title: "用户状态",
+        key: "status",
+        render: (h, params) => {
+          const row = params.row;
+          const color = row.status ? "blue" : "green";
+          const text = row.status ? "暂停状态" : "正常状态";
+          return h(
+            "Tag",
+            {
+              props: {
+                type: "dot",
+                color: color
+              }
+            },
+            text
+          );
+        }
+      },
+      {
+        title: "创建时间",
+        key: "gmtCreate",
+        width: "150"
+      },
+      {
+        title: "最后修改时间",
+        key: "gmtModified"
+      },
+      {
+        title: "操作",
+        key: "action",
+        width: 150,
+        align: "center",
+        render: (h, params) => {
+          return h("div", [
+            h(
+              "Tooltip",
+              {
                 props: {
-                  type: 'text'
-                },
-                style: {
-                  marginRight: '5px'
-                },
-                on: {
-                  click: () => {
-                    this.btnUpdate(params)
-                  }
+                  content: "编辑"
                 }
-              }, [//子节点
-                  h('Icon', {
+              },
+              [
+                h(
+                  "Button",
+                  {
                     props: {
-                      type: 'edit',
-                      color: '#3399ff'
+                      type: "text"
+                    },
+                    style: {
+                      marginRight: "5px"
+                    },
+                    on: {
+                      click: () => {
+                        this.btnUpdate(params);
+                      }
                     }
-                  })
-                ])
-            ])
-          ,
-          h('Tooltip', {
-            props: {
-              content: '删除'
-            }
-          }, [
-              h('Button', {
+                  },
+                  [
+                    //子节点
+                    h("Icon", {
+                      props: {
+                        type: "edit",
+                        color: "#3399ff"
+                      }
+                    })
+                  ]
+                )
+              ]
+            ),
+            h(
+              "Tooltip",
+              {
                 props: {
-                  type: 'text'
-                },
-                on: {
-                  click: () => {
-                    this.btnRemove(params)
-                  }
+                  content: "删除"
                 }
-              }, [
-                  h('Icon', {
+              },
+              [
+                h(
+                  "Button",
+                  {
                     props: {
-                      type: 'trash-b',
-                      color: '#ff3300'
+                      type: "text"
+                    },
+                    on: {
+                      click: () => {
+                        this.btnRemove(params);
+                      }
                     }
-                  })
-                ])
-            ])
-
-        ]);
+                  },
+                  [
+                    h("Icon", {
+                      props: {
+                        type: "trash-b",
+                        color: "#ff3300"
+                      }
+                    })
+                  ]
+                )
+              ]
+            )
+          ]);
+        }
       }
-    }];
+    ];
     return {
       users: [],
       //数据总数
@@ -230,13 +261,11 @@ export default {
       modalForm: {},
       modalRule: {},
       modalIndex: 0
-    }
+    };
   },
   //子组件
-  components: {
-  },
-  computed: {
-  },
+  components: {},
+  computed: {},
   //钩子方法，页面渲染结束后加载
   created() {
     this.list_user(this.current, this.pageSize);
@@ -244,24 +273,16 @@ export default {
   methods: {
     //远程请求数据
     list_user(current, pageSize) {
-      //参数
-      let params = {
-        'page': current,
-        'size': pageSize
-      };
-      let promise = new Promise((resolve, reject) => {
-        Util.ajax({
-          url: '/system/user/list',
-          method: 'post',
-          params: params
-        }).then((response) => {
-          resolve(response.data);
+      let self = this;
+      self.$http
+        .post("/system/user/list", {
+          current: current,
+          size: pageSize
         })
-      });
-      promise.then((result) => {
-        this.users = result.data.list;
-        this.total = result.data.total;
-      })
+        .then(response => {
+          self.users = response.data.data.records;
+          self.total = response.data.data.total;
+        });
     },
     //跳转页
     changePage(current) {
@@ -273,15 +294,12 @@ export default {
       this.pageSize = pageSize;
       this.list_user(this.current, this.pageSize);
     },
-    btnDetail(index) {
-
-    },
+    btnDetail(index) {},
     btnPrint() {
       //打印
       // this.$router.push("http://localhost:8088/activiti-explorer/");
-      Util.ajax({
-        url: "/activiti-explorer/"
-      })
+      let self = this;
+      self.$http.get("/activiti-explorer/");
     },
     btnUpdate(params) {
       //显示界面
@@ -291,14 +309,16 @@ export default {
       this.modalIndex = params.index;
       //远程加载数据
       let promise = new Promise((resolve, reject) => {
-        Util.ajax({
-          url: '/system/user/detail/' + id,
-          method: 'post'
-        }).then((response) => {
-          resolve(response.data);
-        })
+        self
+          .$http({
+            url: "/system/user/detail/" + id,
+            method: "post"
+          })
+          .then(response => {
+            resolve(response.data);
+          });
       });
-      promise.then((result) => {
+      promise.then(result => {
         this.modalForm = result.data;
       });
     },
@@ -310,28 +330,33 @@ export default {
       ids.push(params.row.id);
       //远程持久化数据
       let promise = new Promise((resolve, reject) => {
-        Util.ajax({
-          url: '/system/user/remove',
-          method: 'post',
-          data: ids
-        }).then((result) => {
-          resolve(result)
-        })
+        self
+          .$http({
+            url: "/system/user/remove",
+            method: "post",
+            data: ids
+          })
+          .then(result => {
+            resolve(result);
+          });
       });
-      promise.then((result) => {
+      promise.then(result => {
         //计算当前页数
         //向下取整函数 Math.trunc()
         //删除页数
         let removePageCount = Math.trunc(ids.length / self.pageSize);
         //最后一页尾数全部删除掉，后退一页
-        if (self.total % self.pageSize != 0 && self.total % self.pageSize == ids.length % self.pageSize) {
+        if (
+          self.total % self.pageSize != 0 &&
+          self.total % self.pageSize == ids.length % self.pageSize
+        ) {
           removePageCount += 1;
         }
         self.current -= removePageCount;
         //刷新页面数据
         self.pageRefreshEvent(self.current, self.pageSize);
         self.$Message.success("删除成功");
-      })
+      });
     },
     btnAdd() {
       //新增
@@ -350,16 +375,22 @@ export default {
       this.modalShow = false;
       //modal确认事件
       const self = this;
-      if (self.modalForm.id == undefined || self.modalForm.id == null || self.modalForm.id == "") {
+      if (
+        self.modalForm.id == undefined ||
+        self.modalForm.id == null ||
+        self.modalForm.id == ""
+      ) {
         // 远程持久化数据-新增
         let promise = new Promise((resolve, reject) => {
-          Util.ajax({
-            url: '/system/user/add',
-            method: 'post',
-            data: self.modalForm
-          }).then((response) => {
-            resolve();
-          })
+          self
+            .$http({
+              url: "/system/user/add",
+              method: "post",
+              data: self.modalForm
+            })
+            .then(response => {
+              resolve();
+            });
         });
         promise.then(() => {
           //刷新数据，跳转到最后一页
@@ -370,25 +401,26 @@ export default {
       } else {
         //远程持久化数据-更新
         let promise = new Promise((resolve, reject) => {
-          Util.ajax({
-            url: '/user/update',
-            method: 'post',
-            data: self.modalForm
-          }).then((result) => {
-            resolve(result)
-          })
+          self
+            .$http({
+              url: "/user/update",
+              method: "post",
+              data: self.modalForm
+            })
+            .then(result => {
+              resolve(result);
+            });
         });
-        promise.then((result) => {
+        promise.then(result => {
           //局部更新数据
           Vue.set(self.users, self.modalIndex, result.data.data);
           self.$Message.success("保存成功");
-        })
+        });
       }
     },
     pageRefreshEvent(current, pageSize) {
       this.list_user(current, pageSize);
     }
-
   }
-}
+};
 </script>

@@ -15,7 +15,7 @@ util.title = function (title) {
 };
 
 const ajaxUrl = env === 'development' ?
-    'http://127.0.0.1:8888/api' :
+    ' http://127.0.0.1:8888/api' :
     env === 'production' ?
     'https://www.url.com' :
     'https://debug.url.com';
@@ -32,10 +32,8 @@ util.ajax.interceptors.request.use(function (config) {
     // `headers`选项是需要被发送的自定义请求头信息
     // Cookies缓存获取jwt
     let jwt = Cookies.get('jwt');
-    // 设置jwt头
-    config.headers = {
-        'jwt': jwt
-    };
+    // 设置jwt参数
+    config.headers['Authorization'] = jwt;
     // `withCredentails`选项表明了是否是跨域请求
     config.withCredentials = true;
     return config;
@@ -54,6 +52,14 @@ util.ajax.interceptors.response.use(function (response) {
     return response;
 }, function (error) {
     // 对返回的错误进行一些处理
+    let errorCode = error.response.status;
+    if (errorCode === 404) {
+        iView.Message.error('请求页面失败，404错误');
+    } else if (errorCode === 500) {
+        iView.Message.error('请求页面失败，500错误');
+    } else {
+        iView.Message.error(error.message);
+    }
     return Promise.reject(error);
 });
 
