@@ -1,87 +1,87 @@
 <template>
-  <div>
-    <div class="layout-button">
-      <Row>
-        <Col span="10">
-        <Input>
-        <Select slot="prepend" style="width: 80px">
+<div>
+  <div class="layout-button">
+    <Row>
+      <Col span="10">
+      <Input>
+      <Select slot="prepend" style="width: 80px">
           <Option value="userName">用户名</Option>
           <Option value="userCode">用户密码</Option>
         </Select>
-        <Button slot="append" icon="ios-search"></Button>
-        </Input>
-        </Col>
-        <Col span="12" offset="1">
-        <div>
-          <Button type="info" @click="btnPrint">打印</Button>
-          <Button type="success" @click="btnAdd">新增</Button>
-          <Button type="error" @click="btnListRemove">批量删除</Button>
-        </div>
-        </Col>
-      </Row>
-    </div>
-  
-    <!--数据表格  -->
-    <Table :data="users" :columns="userTableColumns" height="500" stripe></Table>
-    <!--分页  -->
-    <div style="margin: 10px;overflow: hidden">
-      <div style="float: right;">
-        <!--  show-elevator 跳转页-->
-        <!-- show-sizer 每页显示多少条-->
-        <!--show-total 显示总页数  -->
-        <Page :total="total" :current="current" :page-size="pageSize" @on-change="changePage" @on-page-size-change="changePageSize" show-elevator show-sizer show-total></Page>
+      <Button slot="append" icon="ios-search"></Button>
+      </Input>
+      </Col>
+      <Col span="12" offset="1">
+      <div>
+        <Button type="info" @click="btnPrint">打印</Button>
+        <Button type="success" @click="btnAdd">新增</Button>
+        <Button type="error" @click="btnListRemove">批量删除</Button>
       </div>
+      </Col>
+    </Row>
+  </div>
+
+  <!--数据表格  -->
+  <Table :data="users" :columns="userTableColumns" height="500" stripe border ></Table>
+  <!--分页  -->
+  <div style="margin: 10px;overflow: hidden">
+    <div style="float: right;">
+      <!--  show-elevator 跳转页-->
+      <!-- show-sizer 每页显示多少条-->
+      <!--show-total 显示总页数  -->
+      <Page :total="total" :current="current" :page-size="pageSize" @on-change="changePage" @on-page-size-change="changePageSize" show-elevator show-sizer show-total></Page>
     </div>
-    <!--明细信息  -->
-    <div>
-      <Modal :mask-closable="false" :closable="false" v-model="modalShow" width="800" title="用户信息" ok-text="保存" @on-cancel="modalClosedEvent" @on-ok="modalConfirmEvent">
-        <Form label-position="left" :label-width="80" ref="modalForm" :model="modalForm" :rules="modalRule">
-          <Row>
-            <Col span="11">
-            <Form-item label="用户名" prop="userName">
-              <Input v-model="modalForm.userName" type="text" placeholder="请输入用户名"></Input>
-            </Form-item>
-            </Col>
-            <Col span="11" offset="2">
-            <Form-item label="用户编码" prop="userCode">
-              <Input v-model="modalForm.userCode" type="text" placeholder="请输入用户编码"></Input>
-            </Form-item>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="11">
-            <Form-item label="用户邮箱" prop="userEmail">
-              <Input v-model="modalForm.userEmail" type="text" placeholder="请输入用户邮箱"></Input>
-            </Form-item>
-            </Col>
-            <Col span="11" offset="2">
-            <Form-item label="用户电话" prop="userPhone">
-              <Input v-model="modalForm.userPhone" type="text" placeholder="请输入用户电话"></Input>
-            </Form-item>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="11">
-            <Form-item label="用户类型" prop="userType">
-              <Select v-model="modalForm.userType" placeholder="请输入用户类型">
+  </div>
+  <!--明细信息  -->
+  <div>
+    <Modal :mask-closable="false" :closable="false" v-model="modalShow" width="800" title="用户信息" ok-text="保存" @on-cancel="modalClosedEvent" @on-ok="modalConfirmEvent">
+      <Form label-position="left" :label-width="80" ref="modalForm" :model="modalForm" :rules="modalRule">
+        <Row>
+          <Col span="11">
+          <Form-item label="用户名" prop="userName">
+            <Input v-model="modalForm.userName" type="text" placeholder="请输入用户名"></Input>
+          </Form-item>
+          </Col>
+          <Col span="11" offset="2">
+          <Form-item label="用户编码" prop="userCode">
+            <Input v-model="modalForm.userCode" type="text" placeholder="请输入用户编码"></Input>
+          </Form-item>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="11">
+          <Form-item label="用户邮箱" prop="userEmail">
+            <Input v-model="modalForm.userEmail" type="text" placeholder="请输入用户邮箱"></Input>
+          </Form-item>
+          </Col>
+          <Col span="11" offset="2">
+          <Form-item label="用户电话" prop="userPhone">
+            <Input v-model="modalForm.userPhone" type="text" placeholder="请输入用户电话"></Input>
+          </Form-item>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="11">
+          <Form-item label="用户类型" prop="userType">
+            <Select v-model="modalForm.userType" placeholder="请输入用户类型">
                 <Option value="0">普通用户</Option>
                 <Option value="1">管理员</Option>
               </Select>
-            </Form-item>
-            </Col>
-            <Col span="11" offset="2">
-            <Form-item label="用户状态" prop="status">
-              <Select v-model="modalForm.status" placeholder="请输入用户状态">
+          </Form-item>
+          </Col>
+          <Col span="11" offset="2">
+          <Form-item label="用户状态" prop="status">
+            <Select v-model="modalForm.status" placeholder="请输入用户状态">
                 <Option value="true">暂停状态</Option>
                 <Option value="false">正常状态</Option>
               </Select>
-            </Form-item>
-            </Col>
-          </Row>
-        </Form>
-      </Modal>
-    </div>
+          </Form-item>
+          </Col>
+        </Row>
+      </Form>
+    </Modal>
   </div>
+</div>
 </template>
 <script>
 import Vue from "vue";
@@ -90,14 +90,15 @@ export default {
     let tableColumns = [
       {
         type: "selection",
-        width: 60,
+        width: 60
         // align: 'center',
-        fixed: "left"
+        // fixed: "left"
       },
       {
         title: "#",
         key: "id",
-        width: "60"
+        width: "60",
+        ellipsis: true
       },
       {
         title: "用户名",
@@ -172,75 +173,41 @@ export default {
       {
         title: "操作",
         key: "action",
-        width: 150,
+        width: 160,
         align: "center",
+        // fixed: "right",
         render: (h, params) => {
           return h("div", [
             h(
-              "Tooltip",
+              "Button",
               {
                 props: {
-                  content: "编辑"
+                  type: "primary"
+                },
+                style: {
+                  marginRight: "5px"
+                },
+                on: {
+                  click: () => {
+                    this.btnUpdate(params);
+                  }
                 }
               },
-              [
-                h(
-                  "Button",
-                  {
-                    props: {
-                      type: "text"
-                    },
-                    style: {
-                      marginRight: "5px"
-                    },
-                    on: {
-                      click: () => {
-                        this.btnUpdate(params);
-                      }
-                    }
-                  },
-                  [
-                    //子节点
-                    h("Icon", {
-                      props: {
-                        type: "edit",
-                        color: "#3399ff"
-                      }
-                    })
-                  ]
-                )
-              ]
+              "编辑"
             ),
             h(
-              "Tooltip",
+              "Button",
               {
                 props: {
-                  content: "删除"
+                  type: "error"
+                },
+                on: {
+                  click: () => {
+                    this.btnRemove(params);
+                  }
                 }
               },
-              [
-                h(
-                  "Button",
-                  {
-                    props: {
-                      type: "text"
-                    },
-                    on: {
-                      click: () => {
-                        this.btnRemove(params);
-                      }
-                    }
-                  },
-                  [
-                    h("Icon", {
-                      props: {
-                        type: "trash-b",
-                        color: "#ff3300"
-                      }
-                    })
-                  ]
-                )
-              ]
+              "删除"
             )
           ]);
         }

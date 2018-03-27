@@ -124,12 +124,13 @@ export default {
         type: "selection",
         width: 60,
         // align: 'center',
-        fixed: "left"
+        // fixed: "left"
       },
       {
         title: "#",
         key: "id",
-        width: 120
+        width: 120,
+        ellipsis: true
       },
       {
         title: "创建时间",
@@ -149,7 +150,8 @@ export default {
       {
         title: "上级菜单主键",
         key: "menuPid",
-        width: 120
+        width: 120,
+        ellipsis: true
       },
       {
         title: "菜单名称",
@@ -169,7 +171,8 @@ export default {
       {
         title: "菜单权限",
         key: "menuPermission",
-        width: 120
+        width: 120,
+        ellipsis: true
       },
       {
         title: "菜单图标",
@@ -191,7 +194,7 @@ export default {
         key: "action",
         width: 150,
         align: "center",
-        fixed: "right",
+        // fixed: "right",
         render: (h, params) => {
           return h("div", [
             h(

@@ -57,7 +57,7 @@ module.exports = merge(webpackBaseConfig, {
  * 4.增加htp-proxy-middleware请求中间件，配置代理相关配置
  * 5.访问流程：前端访问虚拟服务器express，虚拟服务器express对前端请求进行代理转发，访问实际后端
  */
-//服务端模拟转发请求，使用expres
+//正向代理服务端模拟转发请求，使用expres
 var express = require('express');
 var app = express();
 //虚拟服务器转发请求到实际后台服务器
