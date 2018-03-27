@@ -3,12 +3,11 @@
   <div class="layout-button">
     <Row>
       <Col span="10">
-      <Input>
-      <Select slot="prepend" style="width: 80px">
-          <Option value="userName">用户名</Option>
-          <Option value="userCode">用户密码</Option>
+      <Input v-model="queryValue">
+      <Select slot="prepend" style="width: 80px" v-model="queryField">
+          <Option v-for="item in queryConditions" :value="item.value" :label="item.label" ></Option>
         </Select>
-      <Button slot="append" icon="ios-search"></Button>
+      <Button slot="append" icon="ios-search" type="primary" @click="btnQuery"></Button>
       </Input>
       </Col>
       <Col span="12" offset="1">
@@ -20,9 +19,8 @@
       </Col>
     </Row>
   </div>
-
   <!--数据表格  -->
-  <Table :data="users" :columns="userTableColumns" height="500" stripe border ></Table>
+  <Table :data="users" :columns="userTableColumns" height="500" @on-selection-change="selectionChange" stripe border ref="userDataTable" id="userDataTable"></Table>
   <!--分页  -->
   <div style="margin: 10px;overflow: hidden">
     <div style="float: right;">
@@ -72,8 +70,8 @@
           <Col span="11" offset="2">
           <Form-item label="用户状态" prop="status">
             <Select v-model="modalForm.status" placeholder="请输入用户状态">
-                <Option value="true">暂停状态</Option>
-                <Option value="false">正常状态</Option>
+                <Option value=0>正常状态</Option>
+                <Option value=1>暂停状态</Option>
               </Select>
           </Form-item>
           </Col>
@@ -84,11 +82,11 @@
 </div>
 </template>
 <script>
-import Vue from "vue";
+import printJS from "print-js";
+import html2canvas from "html2canvas";
 export default {
   data() {
-    let tableColumns = [
-      {
+    let tableColumns = [{
         type: "selection",
         width: 60
         // align: 'center',
@@ -123,16 +121,15 @@ export default {
         render: (h, params) => {
           const row = params.row;
           const color =
-            row.userType === "0"
-              ? "blue"
-              : row.userType === "1" ? "green" : "red";
+            row.userType === "0" ?
+            "blue" :
+            row.userType === "1" ? "green" : "red";
           const text =
-            row.userType === "0"
-              ? "普通用户"
-              : row.userType === "1" ? "管理员用户" : "未知状态";
+            row.userType === "0" ?
+            "普通用户" :
+            row.userType === "1" ? "管理员用户" : "未知状态";
           return h(
-            "Tag",
-            {
+            "Tag", {
               props: {
                 type: "dot",
                 color: color
@@ -150,8 +147,7 @@ export default {
           const color = row.status ? "blue" : "green";
           const text = row.status ? "暂停状态" : "正常状态";
           return h(
-            "Tag",
-            {
+            "Tag", {
               props: {
                 type: "dot",
                 color: color
@@ -179,8 +175,7 @@ export default {
         render: (h, params) => {
           return h("div", [
             h(
-              "Button",
-              {
+              "Button", {
                 props: {
                   type: "primary"
                 },
@@ -196,8 +191,7 @@ export default {
               "编辑"
             ),
             h(
-              "Button",
-              {
+              "Button", {
                 props: {
                   type: "error"
                 },
@@ -211,6 +205,15 @@ export default {
             )
           ]);
         }
+      }
+    ];
+    let queryConditions = [{
+        value: "user_name",
+        label: "用户姓名"
+      },
+      {
+        value: "status",
+        label: "用户状态"
       }
     ];
     return {
@@ -227,7 +230,15 @@ export default {
       modalShow: false,
       modalForm: {},
       modalRule: {},
-      modalIndex: 0
+      modalIndex: 0,
+      //多选选中的数据
+      selectedIndex: [],
+      //查询条件参数
+      queryConditions: queryConditions,
+      //查询条件
+      queryField: "",
+      //查询字段值
+      queryValue: ""
     };
   },
   //子组件
@@ -235,79 +246,46 @@ export default {
   computed: {},
   //钩子方法，页面渲染结束后加载
   created() {
-    this.list_user(this.current, this.pageSize);
+    let self = this;
+    self.list_user(self.current, self.pageSize);
   },
   methods: {
-    //远程请求数据
-    list_user(current, pageSize) {
+    btnAdd() {
+      //数据新增
       let self = this;
-      self.$http
-        .post("/system/user/list", {
-          current: current,
-          size: pageSize
-        })
-        .then(response => {
-          self.users = response.data.data.records;
-          self.total = response.data.data.total;
-        });
-    },
-    //跳转页
-    changePage(current) {
-      this.current = current;
-      this.list_user(this.current, this.pageSize);
-    },
-    //切换每页条数
-    changePageSize(pageSize) {
-      this.pageSize = pageSize;
-      this.list_user(this.current, this.pageSize);
-    },
-    btnDetail(index) {},
-    btnPrint() {
-      //打印
-      // this.$router.push("http://localhost:8088/activiti-explorer/");
-      let self = this;
-      self.$http.get("/activiti-explorer/");
-    },
-    btnUpdate(params) {
-      //显示界面
-      this.modalShow = true;
-      //操作行主键
-      let id = params.row.id;
-      this.modalIndex = params.index;
-      //远程加载数据
-      let promise = new Promise((resolve, reject) => {
-        self
-          .$http({
-            url: "/system/user/detail/" + id,
-            method: "post"
-          })
-          .then(response => {
-            resolve(response.data);
-          });
-      });
-      promise.then(result => {
-        this.modalForm = result.data;
-      });
+      self.modalForm = {};
+      self.modalShow = true;
     },
     btnRemove(params) {
+      //单行删除
       let self = this;
       self.modalIndex = params.index;
-      //删除
-      let ids = [];
-      ids.push(params.row.id);
       //远程持久化数据
-      let promise = new Promise((resolve, reject) => {
-        self
-          .$http({
-            url: "/system/user/remove",
-            method: "post",
-            data: ids
-          })
-          .then(result => {
-            resolve(result);
-          });
+      self.$http.post("/system/user/remove/" + params.row.id).then(result => {
+        //计算当前页数
+        //向下取整函数 Math.trunc()
+        //删除页数
+        let removePageCount = Math.trunc(1 / self.pageSize);
+        //最后一页尾数全部删除掉，后退一页
+        if (
+          self.total % self.pageSize != 0 &&
+          self.total % self.pageSize == 1 % self.pageSize
+        ) {
+          removePageCount += 1;
+        }
+        self.current -= removePageCount;
+        //刷新页面数据
+        self.pageRefreshEvent(self.current, self.pageSize);
+        self.$Message.success("删除成功");
       });
-      promise.then(result => {
+    },
+    btnListRemove() {
+      //批量删除
+      let self = this;
+      //删除
+      let ids = self.selectedIndex;
+      //远程持久化数据
+      self.$http.post("/system/user/remove", ids).then(result => {
         //计算当前页数
         //向下取整函数 Math.trunc()
         //删除页数
@@ -322,71 +300,143 @@ export default {
         self.current -= removePageCount;
         //刷新页面数据
         self.pageRefreshEvent(self.current, self.pageSize);
-        self.$Message.success("删除成功");
+        self.$Message.success("批量删除成功");
       });
     },
-    btnAdd() {
-      //新增
+    btnUpdate(params) {
+      //数据更新
       let self = this;
-      self.modalForm = {};
+      //显示界面
       self.modalShow = true;
+      //操作行主键
+      let id = params.row.id;
+      self.modalIndex = params.index;
+      //远程加载数据
+      self.$http.post("/system/user/detail/" + id).then(response => {
+        self.modalForm = response.data.data;
+      });
     },
-    btnListRemove() {
-      //批量删除
+    list_user(current, pageSize) {
+      //分页查询
+      let self = this;
+      //远程请求数据
+      self.$http
+        .post("/system/user/list", {
+          current: current,
+          size: pageSize
+        })
+        .then(response => {
+          self.users = response.data.data.records;
+          self.total = response.data.data.total;
+        });
     },
-    modalClosedEvent() {
-      //modal关闭事件
-      this.modalShow = false;
+    btnQuery() {
+      //查询事件
+      let self = this;
+      if (self.queryField !== "" && self.queryValue !== "") {
+        //动态构造查询条件
+        let conditionKey = self.queryField;
+        let conditionValue = self.queryValue;
+        let condition = {};
+        condition[conditionKey] = conditionValue;
+        self.$http.post("/system/user/list", {
+          current: self.current,
+          size: self.pageSize,
+          //构造查询条件
+          condition: condition
+        }).then(response => {
+          self.users = response.data.data.records;
+          self.total = response.data.data.total;
+        });
+      }
+    },
+    btnPrint() {
+      let self = this;
+      let table = this.$refs.userDataTable.$el;
+      /* 这部分代码用来解决生成的图片不清晰的问题 */
+      let tableWidth = table.offsetWidth;
+      let tableHeight = table.offsetHeight;
+      let canvas = document.createElement("canvas");
+      canvas.width = tableWidth * 2;
+      canvas.height = tableHeight * 2;
+      canvas.style.width = tableWidth + "px";
+      canvas.style.height = tableHeight + "px";
+      document.body.appendChild(canvas);
+      var context = canvas.getContext("2d");
+      context.scale(2, 2);
+      /* 这部分代码用来解决生成的图片不清晰的问题 */
+      //曲线救国，先转换成图片，再进行打印
+      html2canvas(table, {
+        // canvas: canvas,
+        onrendered(image) {
+          let url = image.toDataURL();
+          printJS({
+            printable: url,
+            type: "image",
+            header: "用户信息"
+          });
+        }
+      });
     },
     modalConfirmEvent() {
-      this.modalShow = false;
+      //数据保存
+      let self = this;
+      self.modalShow = false;
       //modal确认事件
-      const self = this;
       if (
         self.modalForm.id == undefined ||
         self.modalForm.id == null ||
         self.modalForm.id == ""
       ) {
         // 远程持久化数据-新增
-        let promise = new Promise((resolve, reject) => {
-          self
-            .$http({
-              url: "/system/user/add",
-              method: "post",
-              data: self.modalForm
-            })
-            .then(response => {
-              resolve();
-            });
-        });
-        promise.then(() => {
+        self.$http.post("/system/user/add", self.modalForm).then(response => {
           //刷新数据，跳转到最后一页
           self.current = Math.trunc(self.total / self.pageSize) + 1;
-          self.pageRefreshEvent(this.current, this.pageSize);
-          self.$Message.info("保存成功");
+          self.pageRefreshEvent(self.current, self.pageSize);
+          self.$Message.info("新增保存成功");
         });
       } else {
         //远程持久化数据-更新
-        let promise = new Promise((resolve, reject) => {
-          self
-            .$http({
-              url: "/user/update",
-              method: "post",
-              data: self.modalForm
-            })
-            .then(result => {
-              resolve(result);
-            });
-        });
-        promise.then(result => {
+        self.$http.post("/system/user/update", self.modalForm).then(result => {
           //局部更新数据
-          Vue.set(self.users, self.modalIndex, result.data.data);
-          self.$Message.success("保存成功");
+          self.pageRefreshEvent(self.current, self.pageSize);
+          self.$Message.success("修改保存成功");
         });
       }
     },
+    changePage(current) {
+      //跳转页
+      let self = this;
+      self.current = current;
+      self.list_user(self.current, self.pageSize);
+    },
+    changePageSize(pageSize) {
+      //切换每页条数
+      let self = this;
+      self.pageSize = pageSize;
+      self.list_user(self.current, self.pageSize);
+    },
+    modalClosedEvent() {
+      //modal关闭事件
+      this.modalShow = false;
+    },
     pageRefreshEvent(current, pageSize) {
-      this.list_user(current, pageSize);
+      //数据刷新
+      let self = this;
+      self.list_user(current, pageSize);
+    },
+    selectionChange(selection) {
+      //选中更改事件
+      let self = this;
+      //selection 已选中数据
+      self.selectedIndex = [];
+      if (selection instanceof Array) {
+        selection.forEach(function(v, k) {
+          self.selectedIndex.push(v.id);
+        });
+      } else {
+        self.selectedIndex.push(selection.id);
+      }
     }
   }
 };
