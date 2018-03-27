@@ -333,11 +333,11 @@ export default {
     btnQuery() {
       //查询事件
       let self = this;
+      let condition = {};
       if (self.queryField !== "" && self.queryValue !== "") {
         //动态构造查询条件
         let conditionKey = self.queryField;
         let conditionValue = self.queryValue;
-        let condition = {};
         condition[conditionKey] = conditionValue;
         self.$http.post("/system/user/list", {
           current: self.current,
@@ -348,6 +348,8 @@ export default {
           self.users = response.data.data.records;
           self.total = response.data.data.total;
         });
+      } else {
+        self.list_user(self.current, self.pageSize);
       }
     },
     btnPrint() {

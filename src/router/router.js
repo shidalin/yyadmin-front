@@ -1,5 +1,4 @@
 import Main from '@/views/Main.vue';
-import workflow from './workflow';
 
 // 不作为Main组件的子页面展示的页面单独写，如下
 export const loginRouter = {
@@ -335,21 +334,6 @@ export const appRouter = [{
         }]
     },
     {
-        path: '/process_definition',
-        icon: 'key',
-        name: 'process_definition',
-        title: '流程管理',
-        component: Main,
-        children: [{
-            path: 'workflow_process_definition',
-            title: '流程定义',
-            access: 'workflow_process_definition',
-            name: 'process_definition_index',
-            component: () =>
-                import ('@/views/modules/workflow/processDefinition.vue')
-        }]
-    },
-    {
         path: '/system',
         icon: 'key',
         name: 'system',
@@ -418,71 +402,6 @@ export const appRouter = [{
                 name: 'system_druid',
                 component: () =>
                     import ('@/views/modules/system/druid.vue')
-            }
-        ]
-    },
-    {
-        path: '/busi',
-        icon: 'key',
-        name: 'busi',
-        title: '业务管理',
-        component: Main,
-        children: [{
-                path: 'busi_project',
-                title: '项目',
-                access: 'busi_proejct',
-                name: 'busi_project',
-                component: () =>
-                    import ('@/views/modules/busi/project.vue')
-            },
-            {
-                path: 'busi_requirement',
-                icon: 'fa-commenting-o',
-                title: '需求',
-                access: 'busi_requirement',
-                name: 'busi_requirement',
-                component: () =>
-                    import ('@/views/modules/busi/requirement.vue')
-            },
-            {
-                path: 'busi_bug',
-                title: 'BUG',
-                access: 'busi_bug',
-                name: 'busi_bug',
-                component: () =>
-                    import ('@/views/modules/busi/bug.vue')
-            },
-            {
-                path: 'busi_proplan',
-                title: '计划',
-                access: 'busi_proplan',
-                name: 'busi_proplan',
-                component: () =>
-                    import ('@/views/modules/busi/proplan.vue')
-            },
-            {
-                path: 'busi_document',
-                title: '文档',
-                access: 'busi_document',
-                name: 'busi_document',
-                component: () =>
-                    import ('@/views/modules/busi/document.vue')
-            },
-            {
-                path: 'busi_project_user',
-                title: '项目分配',
-                access: 'busi_project_user',
-                name: 'busi_project_user',
-                component: () =>
-                    import ('@/views/modules/busi/projectUser.vue')
-            },
-            {
-                path: 'busi_requirement_user',
-                title: '需求分配',
-                access: 'busi_requirement_user',
-                name: 'busi_requirement_user',
-                component: () =>
-                    import ('@/views/modules/busi/requirementUser.vue')
             }
         ]
     }
