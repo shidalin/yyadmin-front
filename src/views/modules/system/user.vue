@@ -20,7 +20,7 @@
     </Row>
   </div>
   <!--数据表格  -->
-  <Table :data="users" :columns="userTableColumns" height="500" @on-selection-change="selectionChange" stripe border ref="userDataTable" id="userDataTable"></Table>
+  <Table :data="users" :columns="userTableColumns" height="500" @on-selection-change="selectionChange" stripe border ref="userDataTable"></Table>
   <!--分页  -->
   <div style="margin: 10px;overflow: hidden">
     <div style="float: right;">
@@ -322,8 +322,8 @@ export default {
       //远程请求数据
       self.$http
         .post("/system/user/list", {
-          current: current,
-          size: pageSize
+          current: self.current,
+          size: self.pageSize
         })
         .then(response => {
           self.users = response.data.data.records;
@@ -425,7 +425,7 @@ export default {
     pageRefreshEvent(current, pageSize) {
       //数据刷新
       let self = this;
-      self.list_user(current, pageSize);
+      self.list_user(self.current, self.pageSize);
     },
     selectionChange(selection) {
       //选中更改事件

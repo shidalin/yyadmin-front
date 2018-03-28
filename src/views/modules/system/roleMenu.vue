@@ -3,12 +3,11 @@
     <div class="layout-button">
         <Row>
             <Col span="10">
-            <Input>
-            <Select slot="prepend" style="width: 80px">
-                    <Option value="userName">用户名</Option>
-                    <Option value="userCode">用户密码</Option>
+            <Input v-model="queryValue">
+            <Select slot="prepend" style="width: 80px" v-model="queryField">
+                    <Option v-for="item in queryConditions" :value="item.value" :label="item.label"></Option>
                 </Select>
-            <Button slot="append" icon="ios-search"></Button>
+            <Button slot="append" icon="ios-search" type="primary" @click="btnQuery"></Button>
             </Input>
             </Col>
             <Col span="12" offset="1">
@@ -22,7 +21,7 @@
     </div>
 
     <!--数据表格  -->
-    <Table :data="roleMenus" :columns="roleMenuTableColumns" height="500" stripe></Table>
+    <Table :data="roleMenus" :columns="roleMenuTableColumns" height="500" @on-selection-change="selectionChange" stripe border ref="roleMenuDataTable"></Table>
     <!--分页  -->
     <div style="margin: 10px;overflow: hidden">
         <div style="float: right;">
@@ -34,43 +33,21 @@
     </div>
     <!--明细信息  -->
     <div>
-        <Modal :mask-closable="false" :closable="false" v-model="modalShow" width="800" title="角色-菜单信息" ok-text="保存" @on-cancel="modalClosedEvent" @on-ok="modalConfirmEvent">
+        <Modal :mask-closable="false" :closable="false" v-model="modalShow" width="800" title="角色菜单关联表信息" ok-text="保存" @on-cancel="modalClosedEvent" @on-ok="modalConfirmEvent">
             <Form label-position="left" :label-width="80" ref="modalForm" :model="modalForm" :rules="modalRule">
                 <Row>
                     <Col span="11">
-                    <Form-item label="角色-菜单主键" prop="id">
-                        <Input v-model="modalForm.id" type="text" placeholder="请输入角色-菜单主键"></Input>
+                    <Form-item label="关联角色" prop="roleId">
+                        <Input v-model="modalForm.roleId" type="text" placeholder="请输入关联角色"></Input>
                     </Form-item>
                     </Col>
-                    <Col span="11" offset="2">
-                    <Form-item label="创建时间" prop="gmtCreate">
-                        <Input v-model="modalForm.gmtCreate" type="text" placeholder="请输入创建时间"></Input>
+                    <Col span="11">
+                    <Form-item label="关联菜单" prop="menuId">
+                        <Input v-model="modalForm.menuId" type="text" placeholder="请输入关联菜单"></Input>
                     </Form-item>
                     </Col>
                 </Row>
                 <Row>
-                    <Col span="11">
-                    <Form-item label="最后修改时间" prop="gmtModified">
-                        <Input v-model="modalForm.gmtModified" type="text" placeholder="请输入最后修改时间"></Input>
-                    </Form-item>
-                    </Col>
-                    <Col span="11" offset="2">
-                    <Form-item label="角色-菜单状态" prop="status">
-                        <Input v-model="modalForm.status" type="text" placeholder="请输入角色-菜单状态"></Input>
-                    </Form-item>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span="11">
-                    <Form-item label="角色主键" prop="roleId">
-                        <Input v-model="modalForm.roleId" type="text" placeholder="请输入角色主键"></Input>
-                    </Form-item>
-                    </Col>
-                    <Col span="11" offset="2">
-                    <Form-item label="菜单主键" prop="menuId">
-                        <Input v-model="modalForm.menuId" type="text" placeholder="请输入菜单主键"></Input>
-                    </Form-item>
-                    </Col>
                 </Row>
             </Form>
         </Modal>
@@ -78,8 +55,8 @@
 </div>
 </template>
 <script>
-import Util from '../../../libs/util';
-import Vue from 'vue';
+import printJS from "print-js";
+import html2canvas from "html2canvas";
 
 export default {
     data() {
@@ -87,101 +64,67 @@ export default {
                 type: 'selection',
                 width: 60,
                 // align: 'center',
-                fixed: 'left'
+                // fixed: 'left'
             },
+
             {
-                title: '#',
-                key: 'id',
-                width: 120
-            },
-            {
-                title: '创建时间',
-                key: 'gmtCreate',
-                width: 120
-            },
-            {
-                title: '最后修改时间',
-                key: 'gmtModified',
-                width: 120
-            },
-            {
-                title: '角色-菜单状态',
-                key: 'status',
-                width: 120
-            },
-            {
-                title: '角色主键',
+                title: '关联角色',
                 key: 'roleId',
                 width: 120
             },
             {
-                title: '菜单主键',
+                title: '关联菜单',
                 key: 'menuId',
                 width: 120
             },
+
             {
                 title: '操作',
                 key: 'action',
-                width: 150,
+                width: 160,
                 align: 'center',
                 fixed: 'right',
                 render:
                     (h, params) => {
-                        return h('div', [
-                            h('Tooltip', {
-                                props: {
-                                    content: '编辑'
-                                }
-                            }, [
-                                h('Button', {
+
+                        return h("div", [
+                            h(
+                                "Button", {
                                     props: {
-                                        type: 'text'
+                                        type: "primary"
                                     },
                                     style: {
-                                        marginRight: '5px'
+                                        marginRight: "5px"
                                     },
                                     on: {
                                         click: () => {
-                                            this.btnUpdate(params)
+                                            this.btnUpdate(params);
                                         }
                                     }
-                                }, [ //子节点
-                                    h('Icon', {
-                                        props: {
-                                            type: 'edit',
-                                            color: '#3399ff'
-                                        }
-                                    })
-                                ])
-                            ]),
-                            h('Tooltip', {
-                                props: {
-                                    content: '删除'
-                                }
-                            }, [
-                                h('Button', {
+                                },
+                                "编辑"
+                            ),
+                            h(
+                                "Button", {
                                     props: {
-                                        type: 'text'
+                                        type: "error"
                                     },
                                     on: {
                                         click: () => {
-                                            this.btnRemove(params)
+                                            this.btnRemove(params);
                                         }
                                     }
-                                }, [
-                                    h('Icon', {
-                                        props: {
-                                            type: 'trash-b',
-                                            color: '#ff3300'
-                                        }
-                                    })
-                                ])
-                            ])
-
+                                },
+                                "删除"
+                            )
                         ]);
                     }
             }
         ];
+        let queryConditions = [{
+            value: "",
+            label: ""
+        }];
         return {
             roleMenus: [],
             //数据总数
@@ -196,7 +139,15 @@ export default {
             modalShow: false,
             modalForm: {},
             modalRule: {},
-            modalIndex: 0
+            modalIndex: 0,
+            //多选选中的数据
+            selectedIndex: [],
+            //查询条件参数
+            queryConditions: queryConditions,
+            //查询条件
+            queryField: "",
+            //查询字段值
+            queryValue: ""
         }
     },
     //子组件
@@ -204,150 +155,203 @@ export default {
     computed: {},
     //钩子方法，页面渲染结束后加载
     created() {
-        this.list_roleMenu(this.current, this.pageSize);
+        let self = this;
+        self.list_roleMenu(self.current, self.pageSize);
     },
     methods: {
-        //远程请求数据
-        list_roleMenu(current, pageSize) {
-            //参数
-            let params = {
-                'page': current,
-                'size': pageSize
-            };
-            let promise = new Promise((resolve, reject) => {
-                Util.ajax({
-                    url: '/role/menu/list',
-                    method: 'post',
-                    params: params
-                }).then((response) => {
-                    resolve(response.data);
-                })
-            });
-            promise.then((result) => {
-                this.roleMenus = result.data.list;
-                this.total = result.data.total;
-            })
-        },
-        //跳转页
-        changePage(current) {
-            this.current = current;
-            this.list_roleMenu(this.current, this.pageSize);
-        },
-        //切换每页条数
-        changePageSize(pageSize) {
-            this.pageSize = pageSize;
-            this.list_roleMenu(this.current, this.pageSize);
-        },
-        btnDetail(index) {
-
-        },
-        btnPrint() {
-            //打印
-        },
-        btnUpdate(params) {
-            //显示界面
-            this.modalShow = true;
-            //操作行主键
-            let id = params.row.id;
-            this.modalIndex = params.index;
-            //远程加载数据
-            let promise = new Promise((resolve, reject) => {
-                Util.ajax({
-                    url: '/roleMenu/detail/' + id,
-                    method: 'post'
-                }).then((response) => {
-                    resolve(response.data);
-                })
-            });
-            promise.then((result) => {
-                this.modalForm = result.data;
-            });
+        btnAdd() {
+            //数据新增
+            let self = this;
+            self.modalForm = {};
+            self.modalShow = true;
         },
         btnRemove(params) {
+            //单行删除
             let self = this;
             self.modalIndex = params.index;
-            //删除
-            let ids = [];
-            ids.push(params.row.id);
             //远程持久化数据
-            let promise = new Promise((resolve, reject) => {
-                Util.ajax({
-                    url: '/role/menu/remove',
-                    method: 'post',
-                    data: ids
-                }).then((result) => {
-                    resolve(result)
-                })
-            });
-            promise.then((result) => {
+            self.$http.post("/system/roleMenu/remove/" + params.row.id).then(result => {
                 //计算当前页数
                 //向下取整函数 Math.trunc()
                 //删除页数
-                let removePageCount = Math.trunc(ids.length / self.pageSize);
+                let removePageCount = Math.trunc(1 / self.pageSize);
                 //最后一页尾数全部删除掉，后退一页
-                if (self.total % self.pageSize != 0 && self.total % self.pageSize == ids.length % self.pageSize) {
+                if (
+                    self.total % self.pageSize != 0 &&
+                    self.total % self.pageSize == 1 % self.pageSize
+                ) {
                     removePageCount += 1;
                 }
                 self.current -= removePageCount;
                 //刷新页面数据
                 self.pageRefreshEvent(self.current, self.pageSize);
                 self.$Message.success("删除成功");
-            })
-        },
-        btnAdd() {
-            //新增
-            let self = this;
-            self.modalForm = {};
-            self.modalShow = true;
+            });
         },
         btnListRemove() {
             //批量删除
+            let self = this;
+            //删除
+            let ids = self.selectedIndex;
+            //远程持久化数据
+            self.$http.post("/system/roleMenu/remove", ids).then(result => {
+                //计算当前页数
+                //向下取整函数 Math.trunc()
+                //删除页数
+                let removePageCount = Math.trunc(ids.length / self.pageSize);
+                //最后一页尾数全部删除掉，后退一页
+                if (
+                    self.total % self.pageSize != 0 &&
+                    self.total % self.pageSize == ids.length % self.pageSize
+                ) {
+                    removePageCount += 1;
+                }
+                self.current -= removePageCount;
+                //刷新页面数据
+                self.pageRefreshEvent(self.current, self.pageSize);
+                self.$Message.success("批量删除成功");
+            });
+        },
+        btnUpdate(params) {
+            //数据更新
+            let self = this;
+            //显示界面
+            self.modalShow = true;
+            //操作行主键
+            let id = params.row.id;
+            self.modalIndex = params.index;
+            //远程加载数据
+            self.$http.post("/system/roleMenu/detail/" + id).then(response => {
+                self.modalForm = response.data.data;
+            });
+        },
+        //远程请求数据
+        list_roleMenu(current, pageSize) {
+            //分页查询
+            let self = this;
+            //远程请求数据
+            self.$http
+                .post("/system/roleMenu/list", {
+                    current: self.current,
+                    size: self.pageSize
+                })
+                .then(response => {
+                    self.roleMenus = response.data.data.records;
+                    self.total = response.data.data.total;
+                });
+        },
+        btnQuery() {
+            //查询事件
+            let self = this;
+            let condition = {};
+            if (self.queryField !== "" && self.queryValue !== "") {
+                //动态构造查询条件
+                let conditionKey = self.queryField;
+                let conditionValue = self.queryValue;
+                condition[conditionKey] = conditionValue;
+                self.$http.post("/system/roleMenu/list", {
+                    current: self.current,
+                    size: self.pageSize,
+                    //构造查询条件
+                    condition: condition
+                }).then(response => {
+                    self.roleMenus = response.data.data.records;
+                    self.total = response.data.data.total;
+                });
+            } else {
+                self.list_roleMenu(self.current, self.pageSize);
+            }
+        },
+        btnPrint() {
+            let self = this;
+            let table = this.$refs.roleMenuDataTable.$el;
+            /* 这部分代码用来解决生成的图片不清晰的问题 */
+            let tableWidth = table.offsetWidth;
+            let tableHeight = table.offsetHeight;
+            let canvas = document.createElement("canvas");
+            canvas.width = tableWidth * 2;
+            canvas.height = tableHeight * 2;
+            canvas.style.width = tableWidth + "px";
+            canvas.style.height = tableHeight + "px";
+            document.body.appendChild(canvas);
+            var context = canvas.getContext("2d");
+            context.scale(2, 2);
+            /* 这部分代码用来解决生成的图片不清晰的问题 */
+            //曲线救国，先转换成图片，再进行打印
+            html2canvas(table, {
+                // canvas: canvas,
+                onrendered(image) {
+                    let url = image.toDataURL();
+                    printJS({
+                        printable: url,
+                        type: "image",
+                        header: "角色菜单关联表信息"
+                    });
+                }
+            });
+        },
+        modalConfirmEvent() {
+            //数据保存
+            let self = this;
+            self.modalShow = false;
+            //modal确认事件
+            if (
+                self.modalForm.id == undefined ||
+                self.modalForm.id == null ||
+                self.modalForm.id == ""
+            ) {
+                // 远程持久化数据-新增
+                self.$http.post("/system/roleMenu/add", self.modalForm).then(response => {
+                    //刷新数据，跳转到最后一页
+                    self.current = Math.trunc(self.total / self.pageSize) + 1;
+                    self.pageRefreshEvent(self.current, self.pageSize);
+                    self.$Message.info("新增保存成功");
+                });
+            } else {
+                //远程持久化数据-更新
+                self.$http.post("/system/roleMenu/update", self.modalForm).then(result => {
+                    //局部更新数据
+                    self.pageRefreshEvent(self.current, self.pageSize);
+                    self.$Message.success("修改保存成功");
+                });
+            }
+        },
+        //跳转页
+        changePage(current) {
+            //跳转页
+            let self = this;
+            self.current = current;
+            self.list_roleMenu(self.current, self.pageSize);
+            this.list_roleMenu(this.current, this.pageSize);
+        },
+        //切换每页条数
+        changePageSize(pageSize) {
+            //切换每页条数
+            let self = this;
+            self.pageSize = pageSize;
+            self.list_roleMenu(self.current, self.pageSize);
         },
         modalClosedEvent() {
             //modal关闭事件
             this.modalShow = false;
         },
-        modalConfirmEvent() {
-            this.modalShow = false;
-            //modal确认事件
-            const self = this;
-            if (self.modalForm.id == undefined || self.modalForm.id == null || self.modalForm.id == "") {
-                // 远程持久化数据-新增
-                let promise = new Promise((resolve, reject) => {
-                    Util.ajax({
-                        url: '/role/menu/add',
-                        method: 'post',
-                        data: self.modalForm
-                    }).then((response) => {
-                        resolve();
-                    })
-                });
-                promise.then(() => {
-                    //刷新数据，跳转到最后一页
-                    self.current = Math.trunc(self.total / self.pageSize) + 1;
-                    self.pageRefreshEvent(this.current, this.pageSize);
-                    self.$Message.info("保存成功");
+        pageRefreshEvent(current, pageSize) {
+            //数据刷新
+            let self = this;
+            self.list_roleMenu(self.current, self.pageSize);
+        },
+        selectionChange(selection) {
+            //选中更改事件
+            let self = this;
+            //selection 已选中数据
+            self.selectedIndex = [];
+            if (selection instanceof Array) {
+                selection.forEach(function(v, k) {
+                    self.selectedIndex.push(v.id);
                 });
             } else {
-                //远程持久化数据-更新
-                let promise = new Promise((resolve, reject) => {
-                    Util.ajax({
-                        url: '/role/menu/update',
-                        method: 'post',
-                        data: self.modalForm
-                    }).then((result) => {
-                        resolve(result)
-                    })
-                });
-                promise.then((result) => {
-                    //局部更新数据
-                    Vue.set(self.roleMenus, self.modalIndex, result.data.data);
-                    self.$Message.success("保存成功");
-                })
+                self.selectedIndex.push(selection.id);
             }
-        },
-        pageRefreshEvent(current, pageSize) {
-            this.list_roleMenu(current, pageSize);
         }
 
     }
