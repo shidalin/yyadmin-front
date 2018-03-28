@@ -1,7 +1,5 @@
 import axios from 'axios';
 import env from '../../build/env';
-import semver from 'semver';
-import packjson from '../../package.json';
 import Vue from 'vue';
 import Cookies from 'js-cookie';
 import iView from 'iview';
@@ -17,8 +15,8 @@ util.title = function (title) {
 const ajaxUrl = env === 'development' ?
     ' http://127.0.0.1:8888/api' :
     env === 'production' ?
-        'https://www.url.com' :
-        'https://debug.url.com';
+    'https://www.url.com' :
+    'https://debug.url.com';
 
 util.ajax = axios.create({
     baseURL: ajaxUrl,
@@ -155,15 +153,15 @@ util.setCurrentPath = function (vm, name) {
         }];
     } else if ((name.indexOf('_index') >= 0 || isOtherRouter) && name !== 'home_index') {
         currentPathArr = [{
-            title: util.handleTitle(vm, util.getRouterObjByName(vm.$store.state.app.routers, 'home_index')),
-            path: '/home',
-            name: 'home_index'
-        },
-        {
-            title: title,
-            path: '',
-            name: name
-        }
+                title: util.handleTitle(vm, util.getRouterObjByName(vm.$store.state.app.routers, 'home_index')),
+                path: '/home',
+                name: 'home_index'
+            },
+            {
+                title: title,
+                path: '',
+                name: name
+            }
         ];
     } else {
         let currentPathObj = vm.$store.state.app.routers.filter(item => {
@@ -190,35 +188,35 @@ util.setCurrentPath = function (vm, name) {
             }];
         } else if (currentPathObj.children.length <= 1 && currentPathObj.name !== 'home') {
             currentPathArr = [{
-                title: '首页',
-                path: '/home',
-                name: 'home_index'
-            },
-            {
-                title: currentPathObj.title,
-                path: '',
-                name: name
-            }
+                    title: '首页',
+                    path: '/home',
+                    name: 'home_index'
+                },
+                {
+                    title: currentPathObj.title,
+                    path: '',
+                    name: name
+                }
             ];
         } else {
             let childObj = currentPathObj.children.filter((child) => {
                 return child.name === name;
             })[0];
             currentPathArr = [{
-                title: '首页',
-                path: '/home',
-                name: 'home_index'
-            },
-            {
-                title: currentPathObj.title,
-                path: '',
-                name: currentPathObj.name
-            },
-            {
-                title: childObj.title,
-                path: currentPathObj.path + '/' + childObj.path,
-                name: name
-            }
+                    title: '首页',
+                    path: '/home',
+                    name: 'home_index'
+                },
+                {
+                    title: currentPathObj.title,
+                    path: '',
+                    name: currentPathObj.name
+                },
+                {
+                    title: childObj.title,
+                    path: currentPathObj.path + '/' + childObj.path,
+                    name: name
+                }
             ];
         }
     }
@@ -292,21 +290,6 @@ util.fullscreenEvent = function (vm) {
     // 权限菜单过滤相关
     vm.$store.commit('updateMenulist');
     // 全屏相关
-};
-
-util.checkUpdate = function (vm) {
-    axios.get('https://api.github.com/repos/iview/iview-admin/releases/latest').then(res => {
-        let version = res.data.tag_name;
-        vm.$Notice.config({
-            duration: 0
-        });
-        if (semver.lt(packjson.version, version)) {
-            vm.$Notice.info({
-                title: 'iview-admin更新啦',
-                desc: '<p>iView-admin更新到了' + version + '了，去看看有哪些变化吧</p><a style="font-size:13px;" href="https://github.com/iview/iview-admin/releases" target="_blank">前往github查看</a>'
-            });
-        }
-    });
 };
 
 export default util;

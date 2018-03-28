@@ -102,54 +102,7 @@ export const otherRouter = {
 };
 
 // 作为Main组件的子页面展示并且在左侧菜单显示的路由写在appRouter里
-export const appRouter = [{
-        path: '/access',
-        icon: 'key',
-        name: 'access',
-        title: '权限管理',
-        component: Main,
-        children: [{
-            path: 'index',
-            title: '权限管理',
-            name: 'access_index',
-            component: () =>
-                import ('@/views/access/access.vue')
-        }]
-    },
-    {
-        path: '/access-test',
-        icon: 'lock-combination',
-        title: '权限测试页',
-        name: 'accesstest',
-        access: 'access',
-        component: Main,
-        children: [{
-            path: 'index',
-            title: '权限测试页',
-            name: 'accesstest_index',
-            access: 0,
-            component: () =>
-                import ('@/views/access/access-test.vue')
-        }]
-    },
-    {
-        path: '/international',
-        icon: 'earth',
-        title: {
-            i18n: 'international'
-        },
-        name: 'international',
-        component: Main,
-        children: [{
-            path: 'index',
-            title: {
-                i18n: 'international'
-            },
-            name: 'international_index',
-            component: () =>
-                import ('@/views/international/international.vue')
-        }]
-    },
+export const appRouter = [
     {
         path: '/component',
         icon: 'social-buffer',
