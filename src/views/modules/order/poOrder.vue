@@ -21,7 +21,7 @@
     </div>
 
     <!--数据表格  -->
-    <Table :data="roles" :columns="roleTableColumns" height="500" @on-selection-change="selectionChange" stripe border ref="roleDataTable"></Table>
+    <Table :data="poOrders" :columns="poOrderTableColumns" height="500" @on-selection-change="selectionChange" stripe border ref="poOrderDataTable"></Table>
     <!--分页  -->
     <div style="margin: 10px;overflow: hidden">
         <div style="float: right;">
@@ -33,19 +33,19 @@
     </div>
     <!--明细信息  -->
     <div>
-        <Modal :mask-closable="false" :closable="false" v-model="modalShow" width="1200" title="角色信息" ok-text="保存" @on-cancel="modalClosedEvent" @on-ok="modalConfirmEvent">
+        <Modal :mask-closable="false" :closable="false" v-model="modalShow" width="1200" title="订单信息" ok-text="保存" @on-cancel="modalClosedEvent" @on-ok="modalConfirmEvent">
             <Form label-position="left" :label-width="100" ref="modalForm" :model="modalForm" :rules="modalRule">
                 <Row>
                     <Col span="11">
-                    <Form-item label="角色名称" prop="roleName">
-                        <Input v-model="modalForm.roleName" type="text" placeholder="请输入角色名称"></Input>
+                    <Form-item label="订单编号" prop="orderCode">
+                        <Input v-model="modalForm.orderCode" type="text" placeholder="请输入订单编号"></Input>
                     </Form-item>
                     </Col>
                     <Col span="1"> &nbsp;
                     </Col>
                     <Col span="11">
-                    <Form-item label="角色编码" prop="roleCode">
-                        <Input v-model="modalForm.roleCode" type="text" placeholder="请输入角色编码"></Input>
+                    <Form-item label="经销商编码" prop="dealerId">
+                        <Input v-model="modalForm.dealerId" type="text" placeholder="请输入经销商编码"></Input>
                     </Form-item>
                     </Col>
                     <Col span="1"> &nbsp;
@@ -53,12 +53,101 @@
                 </Row>
                 <Row>
                     <Col span="11">
-                    <Form-item label="备注" prop="remark">
-                        <Input v-model="modalForm.remark" type="text" placeholder="请输入备注"></Input>
+                    <Form-item label="经销商名称" prop="dealerName">
+                        <Input v-model="modalForm.dealerName" type="text" placeholder="请输入经销商名称"></Input>
                     </Form-item>
                     </Col>
                     <Col span="1"> &nbsp;
                     </Col>
+                    <Col span="11">
+                    <Form-item label="业务员" prop="busiman">
+                        <Input v-model="modalForm.busiman" type="text" placeholder="请输入业务员"></Input>
+                    </Form-item>
+                    </Col>
+                    <Col span="1"> &nbsp;
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span="11">
+                    <Form-item label="部门" prop="dept">
+                        <Input v-model="modalForm.dept" type="text" placeholder="请输入部门"></Input>
+                    </Form-item>
+                    </Col>
+                    <Col span="1"> &nbsp;
+                    </Col>
+                    <Col span="11">
+                    <Form-item label="制单日期" prop="dbilldate">
+                        <Input v-model="modalForm.dbilldate" type="text" placeholder="请输入制单日期"></Input>
+                    </Form-item>
+                    </Col>
+                    <Col span="1"> &nbsp;
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span="11">
+                    <Form-item label="收货单位" prop="recvunit">
+                        <Input v-model="modalForm.recvunit" type="text" placeholder="请输入收货单位"></Input>
+                    </Form-item>
+                    </Col>
+                    <Col span="1"> &nbsp;
+                    </Col>
+                    <Col span="11">
+                    <Form-item label="收货地址" prop="recvadr">
+                        <Input v-model="modalForm.recvadr" type="text" placeholder="请输入收货地址"></Input>
+                    </Form-item>
+                    </Col>
+                    <Col span="1"> &nbsp;
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span="11">
+                    <Form-item label="开票单位" prop="invcunit">
+                        <Input v-model="modalForm.invcunit" type="text" placeholder="请输入开票单位"></Input>
+                    </Form-item>
+                    </Col>
+                    <Col span="1"> &nbsp;
+                    </Col>
+                    <Col span="11">
+                    <Form-item label="起运数量" prop="transnum">
+                        <Input v-model="modalForm.transnum" type="text" placeholder="请输入起运数量"></Input>
+                    </Form-item>
+                    </Col>
+                    <Col span="1"> &nbsp;
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span="11">
+                    <Form-item label="要求交货日期" prop="dreqdate">
+                        <Input v-model="modalForm.dreqdate" type="text" placeholder="请输入要求交货日期"></Input>
+                    </Form-item>
+                    </Col>
+                    <Col span="1"> &nbsp;
+                    </Col>
+                    <Col span="11">
+                    <Form-item label="预定出货日期" prop="dpredate">
+                        <Input v-model="modalForm.dpredate" type="text" placeholder="请输入预定出货日期"></Input>
+                    </Form-item>
+                    </Col>
+                    <Col span="1"> &nbsp;
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span="11">
+                    <Form-item label="币种" prop="currency">
+                        <Input v-model="modalForm.currency" type="text" placeholder="请输入币种"></Input>
+                    </Form-item>
+                    </Col>
+                    <Col span="1"> &nbsp;
+                    </Col>
+                    <Col span="11">
+                    <Form-item label="备注" prop="vmemo">
+                        <Input v-model="modalForm.vmemo" type="text" placeholder="请输入备注"></Input>
+                    </Form-item>
+                    </Col>
+                    <Col span="1"> &nbsp;
+                    </Col>
+                </Row>
+                <Row>
                 </Row>
             </Form>
         </Modal>
@@ -79,18 +168,73 @@ export default {
             },
 
             {
-                title: '角色名称',
-                key: 'roleName',
+                title: '订单编号',
+                key: 'orderCode',
                 width: 120
             },
             {
-                title: '角色编码',
-                key: 'roleCode',
+                title: '经销商编码',
+                key: 'dealerId',
+                width: 120
+            },
+            {
+                title: '经销商名称',
+                key: 'dealerName',
+                width: 120
+            },
+            {
+                title: '业务员',
+                key: 'busiman',
+                width: 120
+            },
+            {
+                title: '部门',
+                key: 'dept',
+                width: 120
+            },
+            {
+                title: '制单日期',
+                key: 'dbilldate',
+                width: 120
+            },
+            {
+                title: '收货单位',
+                key: 'recvunit',
+                width: 120
+            },
+            {
+                title: '收货地址',
+                key: 'recvadr',
+                width: 120
+            },
+            {
+                title: '开票单位',
+                key: 'invcunit',
+                width: 120
+            },
+            {
+                title: '起运数量',
+                key: 'transnum',
+                width: 120
+            },
+            {
+                title: '要求交货日期',
+                key: 'dreqdate',
+                width: 120
+            },
+            {
+                title: '预定出货日期',
+                key: 'dpredate',
+                width: 120
+            },
+            {
+                title: '币种',
+                key: 'currency',
                 width: 120
             },
             {
                 title: '备注',
-                key: 'remark',
+                key: 'vmemo',
                 width: 120
             },
 
@@ -142,7 +286,7 @@ export default {
             label: ""
         }];
         return {
-            roles: [],
+            poOrders: [],
             //数据总数
             total: 0,
             //当前页码
@@ -150,7 +294,7 @@ export default {
             //每页条数
             pageSize: 10,
             //table表格
-            roleTableColumns: tableColumns,
+            poOrderTableColumns: tableColumns,
             //父子通信属性
             modalShow: false,
             modalForm: {},
@@ -172,7 +316,7 @@ export default {
     //钩子方法，页面渲染结束后加载
     created() {
         let self = this;
-        self.list_role(self.current, self.pageSize);
+        self.list_poOrder(self.current, self.pageSize);
     },
     methods: {
         btnAdd() {
@@ -186,7 +330,7 @@ export default {
             let self = this;
             self.modalIndex = params.index;
             //远程持久化数据
-            self.$http.post("/system/role/remove/" + params.row.id).then(result => {
+            self.$http.post("/order/poOrder/remove/" + params.row.id).then(result => {
                 //计算当前页数
                 //向下取整函数 Math.trunc()
                 //删除页数
@@ -210,7 +354,7 @@ export default {
             //删除
             let ids = self.selectedIndex;
             //远程持久化数据
-            self.$http.post("/system/role/remove", ids).then(result => {
+            self.$http.post("/order/poOrder/remove", ids).then(result => {
                 //计算当前页数
                 //向下取整函数 Math.trunc()
                 //删除页数
@@ -237,22 +381,22 @@ export default {
             let id = params.row.id;
             self.modalIndex = params.index;
             //远程加载数据
-            self.$http.post("/system/role/detail/" + id).then(response => {
+            self.$http.post("/order/poOrder/detail/" + id).then(response => {
                 self.modalForm = response.data.data;
             });
         },
         //远程请求数据
-        list_role(current, pageSize) {
+        list_poOrder(current, pageSize) {
             //分页查询
             let self = this;
             //远程请求数据
             self.$http
-                .post("/system/role/list", {
+                .post("/order/poOrder/list", {
                     current: self.current,
                     size: self.pageSize
                 })
                 .then(response => {
-                    self.roles = response.data.data.records;
+                    self.poOrders = response.data.data.records;
                     self.total = response.data.data.total;
                 });
         },
@@ -265,22 +409,22 @@ export default {
                 let conditionKey = self.queryField;
                 let conditionValue = self.queryValue;
                 condition[conditionKey] = conditionValue;
-                self.$http.post("/system/role/list", {
+                self.$http.post("/order/poOrder/list", {
                     current: self.current,
                     size: self.pageSize,
                     //构造查询条件
                     condition: condition
                 }).then(response => {
-                    self.roles = response.data.data.records;
+                    self.poOrders = response.data.data.records;
                     self.total = response.data.data.total;
                 });
             } else {
-                self.list_role(self.current, self.pageSize);
+                self.list_poOrder(self.current, self.pageSize);
             }
         },
         btnPrint() {
             let self = this;
-            let table = this.$refs.roleDataTable.$el;
+            let table = this.$refs.poOrderDataTable.$el;
             /* 这部分代码用来解决生成的图片不清晰的问题 */
             let tableWidth = table.offsetWidth;
             let tableHeight = table.offsetHeight;
@@ -301,7 +445,7 @@ export default {
                     printJS({
                         printable: url,
                         type: "image",
-                        header: "角色信息"
+                        header: "订单信息"
                     });
                 }
             });
@@ -317,7 +461,7 @@ export default {
                 self.modalForm.id == ""
             ) {
                 // 远程持久化数据-新增
-                self.$http.post("/system/role/add", self.modalForm).then(response => {
+                self.$http.post("/order/poOrder/add", self.modalForm).then(response => {
                     //刷新数据，跳转到最后一页
                     self.current = Math.trunc(self.total / self.pageSize) + 1;
                     self.pageRefreshEvent(self.current, self.pageSize);
@@ -325,7 +469,7 @@ export default {
                 });
             } else {
                 //远程持久化数据-更新
-                self.$http.post("/system/role/update", self.modalForm).then(result => {
+                self.$http.post("/order/poOrder/update", self.modalForm).then(result => {
                     //局部更新数据
                     self.pageRefreshEvent(self.current, self.pageSize);
                     self.$Message.success("修改保存成功");
@@ -337,15 +481,15 @@ export default {
             //跳转页
             let self = this;
             self.current = current;
-            self.list_role(self.current, self.pageSize);
-            this.list_role(this.current, this.pageSize);
+            self.list_poOrder(self.current, self.pageSize);
+            this.list_poOrder(this.current, this.pageSize);
         },
         //切换每页条数
         changePageSize(pageSize) {
             //切换每页条数
             let self = this;
             self.pageSize = pageSize;
-            self.list_role(self.current, self.pageSize);
+            self.list_poOrder(self.current, self.pageSize);
         },
         modalClosedEvent() {
             //modal关闭事件
@@ -354,7 +498,7 @@ export default {
         pageRefreshEvent(current, pageSize) {
             //数据刷新
             let self = this;
-            self.list_role(self.current, self.pageSize);
+            self.list_poOrder(self.current, self.pageSize);
         },
         selectionChange(selection) {
             //选中更改事件

@@ -292,4 +292,14 @@ util.fullscreenEvent = function (vm) {
     // 全屏相关
 };
 
+// 清除所有cookie函数  
+util.clearAllCookie = function () {
+    var keys = document.cookie.match(/[^ =;]+(?=\=)/g);
+    if (keys) {
+        for (var i = keys.length; i--;) {
+            document.cookie = keys[i] + '=0;expires=' + new Date(0).toUTCString();
+        }
+    }
+};
+
 export default util;

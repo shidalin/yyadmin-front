@@ -33,18 +33,22 @@
     </div>
     <!--明细信息  -->
     <div>
-        <Modal :mask-closable="false" :closable="false" v-model="modalShow" width="800" title="菜单信息" ok-text="保存" @on-cancel="modalClosedEvent" @on-ok="modalConfirmEvent">
-            <Form label-position="left" :label-width="80" ref="modalForm" :model="modalForm" :rules="modalRule">
+        <Modal :mask-closable="false" :closable="false" v-model="modalShow" width="1200" title="菜单信息" ok-text="保存" @on-cancel="modalClosedEvent" @on-ok="modalConfirmEvent">
+            <Form label-position="left" :label-width="100" ref="modalForm" :model="modalForm" :rules="modalRule">
                 <Row>
                     <Col span="11">
                     <Form-item label="上级菜单" prop="menuPid">
                         <Input v-model="modalForm.menuPid" type="text" placeholder="请输入上级菜单"></Input>
                     </Form-item>
                     </Col>
+                    <Col span="1"> &nbsp;
+                    </Col>
                     <Col span="11">
                     <Form-item label="菜单名称" prop="menuName">
                         <Input v-model="modalForm.menuName" type="text" placeholder="请输入菜单名称"></Input>
                     </Form-item>
+                    </Col>
+                    <Col span="1"> &nbsp;
                     </Col>
                 </Row>
                 <Row>
@@ -53,10 +57,14 @@
                         <Input v-model="modalForm.menuCode" type="text" placeholder="请输入菜单编码"></Input>
                     </Form-item>
                     </Col>
+                    <Col span="1"> &nbsp;
+                    </Col>
                     <Col span="11">
                     <Form-item label="菜单链接" prop="menuUrl">
                         <Input v-model="modalForm.menuUrl" type="text" placeholder="请输入菜单链接"></Input>
                     </Form-item>
+                    </Col>
+                    <Col span="1"> &nbsp;
                     </Col>
                 </Row>
                 <Row>
@@ -65,10 +73,14 @@
                         <Input v-model="modalForm.menuPermission" type="text" placeholder="请输入菜单权限"></Input>
                     </Form-item>
                     </Col>
+                    <Col span="1"> &nbsp;
+                    </Col>
                     <Col span="11">
                     <Form-item label="菜单图标" prop="menuIcon">
                         <Input v-model="modalForm.menuIcon" type="text" placeholder="请输入菜单图标"></Input>
                     </Form-item>
+                    </Col>
+                    <Col span="1"> &nbsp;
                     </Col>
                 </Row>
                 <Row>
@@ -77,10 +89,14 @@
                         <Input v-model="modalForm.menuSeq" type="text" placeholder="请输入菜单序列"></Input>
                     </Form-item>
                     </Col>
+                    <Col span="1"> &nbsp;
+                    </Col>
                     <Col span="11">
                     <Form-item label="菜单类型" prop="menuType">
                         <Input v-model="modalForm.menuType" type="text" placeholder="请输入菜单类型"></Input>
                     </Form-item>
+                    </Col>
+                    <Col span="1"> &nbsp;
                     </Col>
                 </Row>
                 <Row>
@@ -88,6 +104,8 @@
                     <Form-item label="上级菜单名称" prop="menuPname">
                         <Input v-model="modalForm.menuPname" type="text" placeholder="请输入上级菜单名称"></Input>
                     </Form-item>
+                    </Col>
+                    <Col span="1"> &nbsp;
                     </Col>
                 </Row>
             </Form>

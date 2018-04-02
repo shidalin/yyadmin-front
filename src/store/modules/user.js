@@ -1,12 +1,15 @@
-import Cookies from 'js-cookie';
+// import Cookies from 'js-cookie';
+import Util from '@/libs/util';
 
 const user = {
     state: {},
     mutations: {
         logout (state, vm) {
-            Cookies.remove('user');
-            Cookies.remove('jwt');
-            Cookies.remove('access');
+            // Cookies.remove('user');
+            // Cookies.remove('jwt');
+            // Cookies.remove('access');
+            // 清除所有的cookie
+            Util.clearAllCookie();
             // 恢复默认样式
             let themeLink = document.querySelector('link[name="theme"]');
             themeLink.setAttribute('href', '');

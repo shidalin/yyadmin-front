@@ -21,7 +21,7 @@
     </div>
 
     <!--数据表格  -->
-    <Table :data="roles" :columns="roleTableColumns" height="500" @on-selection-change="selectionChange" stripe border ref="roleDataTable"></Table>
+    <Table :data="dealers" :columns="dealerTableColumns" height="500" @on-selection-change="selectionChange" stripe border ref="dealerDataTable"></Table>
     <!--分页  -->
     <div style="margin: 10px;overflow: hidden">
         <div style="float: right;">
@@ -33,32 +33,25 @@
     </div>
     <!--明细信息  -->
     <div>
-        <Modal :mask-closable="false" :closable="false" v-model="modalShow" width="1200" title="角色信息" ok-text="保存" @on-cancel="modalClosedEvent" @on-ok="modalConfirmEvent">
+        <Modal :mask-closable="false" :closable="false" v-model="modalShow" width="1200" title="经销商信息" ok-text="保存" @on-cancel="modalClosedEvent" @on-ok="modalConfirmEvent">
             <Form label-position="left" :label-width="100" ref="modalForm" :model="modalForm" :rules="modalRule">
                 <Row>
                     <Col span="11">
-                    <Form-item label="角色名称" prop="roleName">
-                        <Input v-model="modalForm.roleName" type="text" placeholder="请输入角色名称"></Input>
+                    <Form-item label="经销商名称" prop="dealerName">
+                        <Input v-model="modalForm.dealerName" type="text" placeholder="请输入经销商名称"></Input>
                     </Form-item>
                     </Col>
                     <Col span="1"> &nbsp;
                     </Col>
                     <Col span="11">
-                    <Form-item label="角色编码" prop="roleCode">
-                        <Input v-model="modalForm.roleCode" type="text" placeholder="请输入角色编码"></Input>
+                    <Form-item label="经销商编码" prop="dealerCode">
+                        <Input v-model="modalForm.dealerCode" type="text" placeholder="请输入经销商编码"></Input>
                     </Form-item>
                     </Col>
                     <Col span="1"> &nbsp;
                     </Col>
                 </Row>
                 <Row>
-                    <Col span="11">
-                    <Form-item label="备注" prop="remark">
-                        <Input v-model="modalForm.remark" type="text" placeholder="请输入备注"></Input>
-                    </Form-item>
-                    </Col>
-                    <Col span="1"> &nbsp;
-                    </Col>
                 </Row>
             </Form>
         </Modal>
@@ -79,18 +72,13 @@ export default {
             },
 
             {
-                title: '角色名称',
-                key: 'roleName',
+                title: '经销商名称',
+                key: 'dealerName',
                 width: 120
             },
             {
-                title: '角色编码',
-                key: 'roleCode',
-                width: 120
-            },
-            {
-                title: '备注',
-                key: 'remark',
+                title: '经销商编码',
+                key: 'dealerCode',
                 width: 120
             },
 
@@ -142,7 +130,7 @@ export default {
             label: ""
         }];
         return {
-            roles: [],
+            dealers: [],
             //数据总数
             total: 0,
             //当前页码
@@ -150,7 +138,7 @@ export default {
             //每页条数
             pageSize: 10,
             //table表格
-            roleTableColumns: tableColumns,
+            dealerTableColumns: tableColumns,
             //父子通信属性
             modalShow: false,
             modalForm: {},
@@ -172,7 +160,7 @@ export default {
     //钩子方法，页面渲染结束后加载
     created() {
         let self = this;
-        self.list_role(self.current, self.pageSize);
+        self.list_dealer(self.current, self.pageSize);
     },
     methods: {
         btnAdd() {
@@ -186,7 +174,7 @@ export default {
             let self = this;
             self.modalIndex = params.index;
             //远程持久化数据
-            self.$http.post("/system/role/remove/" + params.row.id).then(result => {
+            self.$http.post("/order/dealer/remove/" + params.row.id).then(result => {
                 //计算当前页数
                 //向下取整函数 Math.trunc()
                 //删除页数
@@ -210,7 +198,7 @@ export default {
             //删除
             let ids = self.selectedIndex;
             //远程持久化数据
-            self.$http.post("/system/role/remove", ids).then(result => {
+            self.$http.post("/order/dealer/remove", ids).then(result => {
                 //计算当前页数
                 //向下取整函数 Math.trunc()
                 //删除页数
@@ -237,22 +225,22 @@ export default {
             let id = params.row.id;
             self.modalIndex = params.index;
             //远程加载数据
-            self.$http.post("/system/role/detail/" + id).then(response => {
+            self.$http.post("/order/dealer/detail/" + id).then(response => {
                 self.modalForm = response.data.data;
             });
         },
         //远程请求数据
-        list_role(current, pageSize) {
+        list_dealer(current, pageSize) {
             //分页查询
             let self = this;
             //远程请求数据
             self.$http
-                .post("/system/role/list", {
+                .post("/order/dealer/list", {
                     current: self.current,
                     size: self.pageSize
                 })
                 .then(response => {
-                    self.roles = response.data.data.records;
+                    self.dealers = response.data.data.records;
                     self.total = response.data.data.total;
                 });
         },
@@ -265,22 +253,22 @@ export default {
                 let conditionKey = self.queryField;
                 let conditionValue = self.queryValue;
                 condition[conditionKey] = conditionValue;
-                self.$http.post("/system/role/list", {
+                self.$http.post("/order/dealer/list", {
                     current: self.current,
                     size: self.pageSize,
                     //构造查询条件
                     condition: condition
                 }).then(response => {
-                    self.roles = response.data.data.records;
+                    self.dealers = response.data.data.records;
                     self.total = response.data.data.total;
                 });
             } else {
-                self.list_role(self.current, self.pageSize);
+                self.list_dealer(self.current, self.pageSize);
             }
         },
         btnPrint() {
             let self = this;
-            let table = this.$refs.roleDataTable.$el;
+            let table = this.$refs.dealerDataTable.$el;
             /* 这部分代码用来解决生成的图片不清晰的问题 */
             let tableWidth = table.offsetWidth;
             let tableHeight = table.offsetHeight;
@@ -301,7 +289,7 @@ export default {
                     printJS({
                         printable: url,
                         type: "image",
-                        header: "角色信息"
+                        header: "经销商信息"
                     });
                 }
             });
@@ -317,7 +305,7 @@ export default {
                 self.modalForm.id == ""
             ) {
                 // 远程持久化数据-新增
-                self.$http.post("/system/role/add", self.modalForm).then(response => {
+                self.$http.post("/order/dealer/add", self.modalForm).then(response => {
                     //刷新数据，跳转到最后一页
                     self.current = Math.trunc(self.total / self.pageSize) + 1;
                     self.pageRefreshEvent(self.current, self.pageSize);
@@ -325,7 +313,7 @@ export default {
                 });
             } else {
                 //远程持久化数据-更新
-                self.$http.post("/system/role/update", self.modalForm).then(result => {
+                self.$http.post("/order/dealer/update", self.modalForm).then(result => {
                     //局部更新数据
                     self.pageRefreshEvent(self.current, self.pageSize);
                     self.$Message.success("修改保存成功");
@@ -337,15 +325,15 @@ export default {
             //跳转页
             let self = this;
             self.current = current;
-            self.list_role(self.current, self.pageSize);
-            this.list_role(this.current, this.pageSize);
+            self.list_dealer(self.current, self.pageSize);
+            this.list_dealer(this.current, this.pageSize);
         },
         //切换每页条数
         changePageSize(pageSize) {
             //切换每页条数
             let self = this;
             self.pageSize = pageSize;
-            self.list_role(self.current, self.pageSize);
+            self.list_dealer(self.current, self.pageSize);
         },
         modalClosedEvent() {
             //modal关闭事件
@@ -354,7 +342,7 @@ export default {
         pageRefreshEvent(current, pageSize) {
             //数据刷新
             let self = this;
-            self.list_role(self.current, self.pageSize);
+            self.list_dealer(self.current, self.pageSize);
         },
         selectionChange(selection) {
             //选中更改事件

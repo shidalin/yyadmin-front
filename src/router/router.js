@@ -57,9 +57,7 @@ export const otherRouter = {
     component: Main,
     children: [{
             path: 'home',
-            title: {
-                i18n: '主页'
-            },
+            title: "主页",
             name: 'home_index',
             component: () =>
                 import ('@/views/home/home.vue')
@@ -152,6 +150,46 @@ export const appRouter = [
                 name: 'system_druid',
                 component: () =>
                     import ('@/views/modules/system/druid.vue')
+            }
+        ]
+    },
+    {
+        path: '/order',
+        icon: 'key',
+        name: 'order',
+        title: '订单管理',
+        component: Main,
+        children: [{
+                path: 'material',
+                title: '商品',
+                access: 'order_material',
+                name: 'order_material',
+                component: () =>
+                    import ('@/views/modules/order/material.vue')
+            },
+            {
+                path: 'dealer',
+                title: '经销商',
+                access: 'order_dealer',
+                name: 'order_dealer',
+                component: () =>
+                    import ('@/views/modules/order/dealer.vue')
+            },
+            {
+                path: 'order',
+                title: '采购订单',
+                access: 'order_po_order',
+                name: 'order_po_order',
+                component: () =>
+                    import ('@/views/modules/order/poOrder.vue')
+            },
+            {
+                path: 'orderItem',
+                title: '采购订单子表',
+                access: 'order_po_orderItem',
+                name: 'order_orderItem',
+                component: () =>
+                    import ('@/views/modules/order/poOrderItem.vue')
             }
         ]
     }

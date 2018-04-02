@@ -70,7 +70,7 @@ export default {
           self.$http
             .post("/login", {
               username: self.form.userName,
-              password: sha256.sha256_digest(self.form.password)
+              password: sha256.sha256_digest(self.form.password)//密码加密
             })
             .then(function(response) {
               Cookies.set("user", self.form.userName);
@@ -80,7 +80,7 @@ export default {
               Cookies.set("menus", response.data.data.menus);
               self.$store.commit(
                 "setAvator",
-                "https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3448484253,3685836170&fm=27&gp=0.jpg"
+                "../images/avator.jpg"
               );
               if (self.form.userName === "admin") {
                 Cookies.set("access", 0);

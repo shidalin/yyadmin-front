@@ -33,18 +33,22 @@
     </div>
     <!--明细信息  -->
     <div>
-        <Modal :mask-closable="false" :closable="false" v-model="modalShow" width="800" title="用户角色关联表信息" ok-text="保存" @on-cancel="modalClosedEvent" @on-ok="modalConfirmEvent">
-            <Form label-position="left" :label-width="80" ref="modalForm" :model="modalForm" :rules="modalRule">
+        <Modal :mask-closable="false" :closable="false" v-model="modalShow" width="1200" title="用户角色关联表信息" ok-text="保存" @on-cancel="modalClosedEvent" @on-ok="modalConfirmEvent">
+            <Form label-position="left" :label-width="100" ref="modalForm" :model="modalForm" :rules="modalRule">
                 <Row>
                     <Col span="11">
                     <Form-item label="关联用户" prop="userId">
                         <Input v-model="modalForm.userId" type="text" placeholder="请输入关联用户"></Input>
                     </Form-item>
                     </Col>
+                    <Col span="1"> &nbsp;
+                    </Col>
                     <Col span="11">
                     <Form-item label="关联角色" prop="roleId">
                         <Input v-model="modalForm.roleId" type="text" placeholder="请输入关联角色"></Input>
                     </Form-item>
+                    </Col>
+                    <Col span="1"> &nbsp;
                     </Col>
                 </Row>
                 <Row>

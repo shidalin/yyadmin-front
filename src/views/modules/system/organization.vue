@@ -33,18 +33,22 @@
     </div>
     <!--明细信息  -->
     <div>
-        <Modal :mask-closable="false" :closable="false" v-model="modalShow" width="800" title="组织信息" ok-text="保存" @on-cancel="modalClosedEvent" @on-ok="modalConfirmEvent">
-            <Form label-position="left" :label-width="80" ref="modalForm" :model="modalForm" :rules="modalRule">
+        <Modal :mask-closable="false" :closable="false" v-model="modalShow" width="1200" title="组织信息" ok-text="保存" @on-cancel="modalClosedEvent" @on-ok="modalConfirmEvent">
+            <Form label-position="left" :label-width="100" ref="modalForm" :model="modalForm" :rules="modalRule">
                 <Row>
                     <Col span="11">
                     <Form-item label="组织名称" prop="orgName">
                         <Input v-model="modalForm.orgName" type="text" placeholder="请输入组织名称"></Input>
                     </Form-item>
                     </Col>
+                    <Col span="1"> &nbsp;
+                    </Col>
                     <Col span="11">
                     <Form-item label="组织编码" prop="orgCode">
                         <Input v-model="modalForm.orgCode" type="text" placeholder="请输入组织编码"></Input>
                     </Form-item>
+                    </Col>
+                    <Col span="1"> &nbsp;
                     </Col>
                 </Row>
                 <Row>
@@ -53,10 +57,14 @@
                         <Input v-model="modalForm.orgPid" type="text" placeholder="请输入上级组织"></Input>
                     </Form-item>
                     </Col>
+                    <Col span="1"> &nbsp;
+                    </Col>
                     <Col span="11">
                     <Form-item label="组织序列" prop="orgSeq">
                         <Input v-model="modalForm.orgSeq" type="text" placeholder="请输入组织序列"></Input>
                     </Form-item>
+                    </Col>
+                    <Col span="1"> &nbsp;
                     </Col>
                 </Row>
                 <Row>
@@ -64,6 +72,8 @@
                     <Form-item label="组织说明" prop="orgContent">
                         <Input v-model="modalForm.orgContent" type="text" placeholder="请输入组织说明"></Input>
                     </Form-item>
+                    </Col>
+                    <Col span="1"> &nbsp;
                     </Col>
                 </Row>
             </Form>

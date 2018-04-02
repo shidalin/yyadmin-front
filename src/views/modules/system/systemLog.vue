@@ -33,18 +33,22 @@
     </div>
     <!--明细信息  -->
     <div>
-        <Modal :mask-closable="false" :closable="false" v-model="modalShow" width="800" title="系统日志信息" ok-text="保存" @on-cancel="modalClosedEvent" @on-ok="modalConfirmEvent">
-            <Form label-position="left" :label-width="80" ref="modalForm" :model="modalForm" :rules="modalRule">
+        <Modal :mask-closable="false" :closable="false" v-model="modalShow" width="1200" title="系统日志信息" ok-text="保存" @on-cancel="modalClosedEvent" @on-ok="modalConfirmEvent">
+            <Form label-position="left" :label-width="100" ref="modalForm" :model="modalForm" :rules="modalRule">
                 <Row>
                     <Col span="11">
                     <Form-item label="操作人员" prop="userId">
                         <Input v-model="modalForm.userId" type="text" placeholder="请输入操作人员"></Input>
                     </Form-item>
                     </Col>
+                    <Col span="1"> &nbsp;
+                    </Col>
                     <Col span="11">
                     <Form-item label="操作人员名称" prop="userName">
                         <Input v-model="modalForm.userName" type="text" placeholder="请输入操作人员名称"></Input>
                     </Form-item>
+                    </Col>
+                    <Col span="1"> &nbsp;
                     </Col>
                 </Row>
                 <Row>
@@ -53,10 +57,14 @@
                         <Input v-model="modalForm.opration" type="text" placeholder="请输入动作"></Input>
                     </Form-item>
                     </Col>
+                    <Col span="1"> &nbsp;
+                    </Col>
                     <Col span="11">
                     <Form-item label="动作方法" prop="method">
                         <Input v-model="modalForm.method" type="text" placeholder="请输入动作方法"></Input>
                     </Form-item>
+                    </Col>
+                    <Col span="1"> &nbsp;
                     </Col>
                 </Row>
                 <Row>
@@ -65,10 +73,14 @@
                         <Input v-model="modalForm.params" type="text" placeholder="请输入动作方法参数"></Input>
                     </Form-item>
                     </Col>
+                    <Col span="1"> &nbsp;
+                    </Col>
                     <Col span="11">
                     <Form-item label="动作目标链接" prop="ip">
                         <Input v-model="modalForm.ip" type="text" placeholder="请输入动作目标链接"></Input>
                     </Form-item>
+                    </Col>
+                    <Col span="1"> &nbsp;
                     </Col>
                 </Row>
                 <Row>
