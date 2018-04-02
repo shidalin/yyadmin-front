@@ -36,30 +36,28 @@
         <Modal :mask-closable="false" :closable="false" v-model="modalShow" width="1200" title="订单信息" ok-text="保存" @on-cancel="modalClosedEvent" @on-ok="modalConfirmEvent">
             <Form label-position="left" :label-width="100" ref="modalForm" :model="modalForm" :rules="modalRule">
                 <Row>
-                    <Col span="11">
+                    <Col span="5">
                     <Form-item label="订单编号" prop="orderCode">
                         <Input v-model="modalForm.orderCode" type="text" placeholder="请输入订单编号"></Input>
                     </Form-item>
                     </Col>
                     <Col span="1"> &nbsp;
                     </Col>
-                    <Col span="11">
+                    <Col span="5">
                     <Form-item label="经销商编码" prop="dealerId">
                         <Input v-model="modalForm.dealerId" type="text" placeholder="请输入经销商编码"></Input>
                     </Form-item>
                     </Col>
                     <Col span="1"> &nbsp;
                     </Col>
-                </Row>
-                <Row>
-                    <Col span="11">
+                    <Col span="5">
                     <Form-item label="经销商名称" prop="dealerName">
                         <Input v-model="modalForm.dealerName" type="text" placeholder="请输入经销商名称"></Input>
                     </Form-item>
                     </Col>
                     <Col span="1"> &nbsp;
                     </Col>
-                    <Col span="11">
+                    <Col span="5">
                     <Form-item label="业务员" prop="busiman">
                         <Input v-model="modalForm.busiman" type="text" placeholder="请输入业务员"></Input>
                     </Form-item>
@@ -68,30 +66,29 @@
                     </Col>
                 </Row>
                 <Row>
-                    <Col span="11">
+                    <Col span="5">
                     <Form-item label="部门" prop="dept">
                         <Input v-model="modalForm.dept" type="text" placeholder="请输入部门"></Input>
                     </Form-item>
                     </Col>
                     <Col span="1"> &nbsp;
                     </Col>
-                    <Col span="11">
+                    <Col span="5">
                     <Form-item label="制单日期" prop="dbilldate">
                         <Input v-model="modalForm.dbilldate" type="text" placeholder="请输入制单日期"></Input>
                     </Form-item>
                     </Col>
                     <Col span="1"> &nbsp;
                     </Col>
-                </Row>
-                <Row>
-                    <Col span="11">
+
+                    <Col span="5">
                     <Form-item label="收货单位" prop="recvunit">
                         <Input v-model="modalForm.recvunit" type="text" placeholder="请输入收货单位"></Input>
                     </Form-item>
                     </Col>
                     <Col span="1"> &nbsp;
                     </Col>
-                    <Col span="11">
+                    <Col span="5">
                     <Form-item label="收货地址" prop="recvadr">
                         <Input v-model="modalForm.recvadr" type="text" placeholder="请输入收货地址"></Input>
                     </Form-item>
@@ -100,30 +97,28 @@
                     </Col>
                 </Row>
                 <Row>
-                    <Col span="11">
+                    <Col span="5">
                     <Form-item label="开票单位" prop="invcunit">
                         <Input v-model="modalForm.invcunit" type="text" placeholder="请输入开票单位"></Input>
                     </Form-item>
                     </Col>
                     <Col span="1"> &nbsp;
                     </Col>
-                    <Col span="11">
+                    <Col span="5">
                     <Form-item label="起运数量" prop="transnum">
                         <Input v-model="modalForm.transnum" type="text" placeholder="请输入起运数量"></Input>
                     </Form-item>
                     </Col>
                     <Col span="1"> &nbsp;
                     </Col>
-                </Row>
-                <Row>
-                    <Col span="11">
+                    <Col span="5">
                     <Form-item label="要求交货日期" prop="dreqdate">
                         <Input v-model="modalForm.dreqdate" type="text" placeholder="请输入要求交货日期"></Input>
                     </Form-item>
                     </Col>
                     <Col span="1"> &nbsp;
                     </Col>
-                    <Col span="11">
+                    <Col span="5">
                     <Form-item label="预定出货日期" prop="dpredate">
                         <Input v-model="modalForm.dpredate" type="text" placeholder="请输入预定出货日期"></Input>
                     </Form-item>
@@ -141,13 +136,22 @@
                     </Col>
                     <Col span="11">
                     <Form-item label="备注" prop="vmemo">
-                        <Input v-model="modalForm.vmemo" type="text" placeholder="请输入备注"></Input>
+                        <Input v-model="modalForm.vmemo" type="textarea" placeholder="请输入备注"></Input>
                     </Form-item>
                     </Col>
                     <Col span="1"> &nbsp;
                     </Col>
                 </Row>
-                <Row>
+                <Row class="margin-top-10">
+                    <Card>
+                        <p>
+                            <Icon type="ios-list"></Icon>
+                            订单明细
+                        </p>
+                        <Row>
+                            <poOrderItem></poOrderItem>
+                        </Row>
+                    </Card>
                 </Row>
             </Form>
         </Modal>
@@ -157,14 +161,21 @@
 <script>
 import printJS from "print-js";
 import html2canvas from "html2canvas";
+import poOrderItem from "./poOrderItem.vue";
+import poOrderItemView from "./poOrderItemView.vue";
 
 export default {
     data() {
         let tableColumns = [{
-                type: 'selection',
-                width: 60,
-                // align: 'center',
-                // fixed: 'left'
+                type: 'expand',
+                width: 50,
+                render: (h, params) => {
+                    return h(poOrderItemView, {
+                        props: {
+                            parentRow: params.row
+                        }
+                    })
+                }
             },
 
             {
@@ -311,7 +322,10 @@ export default {
         }
     },
     //子组件
-    components: {},
+    components: {
+        poOrderItem,
+        poOrderItemView
+    },
     computed: {},
     //钩子方法，页面渲染结束后加载
     created() {

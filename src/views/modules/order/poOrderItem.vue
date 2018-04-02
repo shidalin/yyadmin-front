@@ -12,14 +12,12 @@
             </Col>
             <Col span="12" offset="1">
             <div>
-                <Button type="info" @click="btnPrint">打印</Button>
-                <Button type="success" @click="btnAdd">新增</Button>
-                <Button type="error" @click="btnListRemove">批量删除</Button>
+                <Button type="success" @click="btnAdd">增行</Button>
+                <Button type="error" @click="btnListRemove">删行</Button>
             </div>
             </Col>
         </Row>
     </div>
-
     <!--数据表格  -->
     <Table :data="poOrderItems" :columns="poOrderItemTableColumns" height="500" @on-selection-change="selectionChange" stripe border ref="poOrderItemDataTable"></Table>
     <!--分页  -->
@@ -31,102 +29,6 @@
             <Page :total="total" :current="current" :page-size="pageSize" @on-change="changePage" @on-page-size-change="changePageSize" show-elevator show-sizer show-total></Page>
         </div>
     </div>
-    <!--明细信息  -->
-    <div>
-        <Modal :mask-closable="false" :closable="false" v-model="modalShow" width="1200" title="订单_商品信息信息" ok-text="保存" @on-cancel="modalClosedEvent" @on-ok="modalConfirmEvent">
-            <Form label-position="left" :label-width="100" ref="modalForm" :model="modalForm" :rules="modalRule">
-                <Row>
-                    <Col span="11">
-                    <Form-item label="主表主键" prop="pid">
-                        <Input v-model="modalForm.pid" type="text" placeholder="请输入主表主键"></Input>
-                    </Form-item>
-                    </Col>
-                    <Col span="1"> &nbsp;
-                    </Col>
-                    <Col span="11">
-                    <Form-item label="商品编码" prop="materialId">
-                        <Input v-model="modalForm.materialId" type="text" placeholder="请输入商品编码"></Input>
-                    </Form-item>
-                    </Col>
-                    <Col span="1"> &nbsp;
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span="11">
-                    <Form-item label="商品名称" prop="materialName">
-                        <Input v-model="modalForm.materialName" type="text" placeholder="请输入商品名称"></Input>
-                    </Form-item>
-                    </Col>
-                    <Col span="1"> &nbsp;
-                    </Col>
-                    <Col span="11">
-                    <Form-item label="数量" prop="nnum">
-                        <Input v-model="modalForm.nnum" type="text" placeholder="请输入数量"></Input>
-                    </Form-item>
-                    </Col>
-                    <Col span="1"> &nbsp;
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span="11">
-                    <Form-item label="重量" prop="nweight">
-                        <Input v-model="modalForm.nweight" type="text" placeholder="请输入重量"></Input>
-                    </Form-item>
-                    </Col>
-                    <Col span="1"> &nbsp;
-                    </Col>
-                    <Col span="11">
-                    <Form-item label="单位" prop="castunitid">
-                        <Input v-model="modalForm.castunitid" type="text" placeholder="请输入单位"></Input>
-                    </Form-item>
-                    </Col>
-                    <Col span="1"> &nbsp;
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span="11">
-                    <Form-item label="含税单价" prop="nqtorigtaxprice">
-                        <Input v-model="modalForm.nqtorigtaxprice" type="text" placeholder="请输入含税单价"></Input>
-                    </Form-item>
-                    </Col>
-                    <Col span="1"> &nbsp;
-                    </Col>
-                    <Col span="11">
-                    <Form-item label="价税合计" prop="norigtaxmny">
-                        <Input v-model="modalForm.norigtaxmny" type="text" placeholder="请输入价税合计"></Input>
-                    </Form-item>
-                    </Col>
-                    <Col span="1"> &nbsp;
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span="11">
-                    <Form-item label="分类" prop="marbasclass">
-                        <Input v-model="modalForm.marbasclass" type="text" placeholder="请输入分类"></Input>
-                    </Form-item>
-                    </Col>
-                    <Col span="1"> &nbsp;
-                    </Col>
-                    <Col span="11">
-                    <Form-item label="规格" prop="materialspec">
-                        <Input v-model="modalForm.materialspec" type="text" placeholder="请输入规格"></Input>
-                    </Form-item>
-                    </Col>
-                    <Col span="1"> &nbsp;
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span="11">
-                    <Form-item label="备注" prop="vmemo">
-                        <Input v-model="modalForm.vmemo" type="text" placeholder="请输入备注"></Input>
-                    </Form-item>
-                    </Col>
-                    <Col span="1"> &nbsp;
-                    </Col>
-                </Row>
-            </Form>
-        </Modal>
-    </div>
 </div>
 </template>
 <script>
@@ -135,110 +37,227 @@ import html2canvas from "html2canvas";
 
 export default {
     data() {
+        // let currentRow = {};
         let tableColumns = [{
-                type: 'selection',
-                width: 60,
+                type: "selection",
+                width: 60
                 // align: 'center',
                 // fixed: 'left'
             },
-
             {
-                title: '主表主键',
-                key: 'pid',
+                title: "主表主键",
+                key: "pid",
                 width: 120
             },
             {
-                title: '商品编码',
-                key: 'materialId',
-                width: 120
+                title: "商品编码",
+                key: "materialId",
+                width: 120,
+                render: (h, param) => {
+                    //文本输入框渲染器
+                    let self = this;
+                    return h("Input", {
+                        props: {
+                            type: "text",
+                            value: self.poOrderItems[param.index][param.key]
+                        },
+                        on: {
+                            "on-change" (event) {
+                                let key = param.key;
+                                self.poOrderItems[param.index][key] = event.target.value;
+                            }
+                        }
+                    });
+                }
             },
             {
-                title: '商品名称',
-                key: 'materialName',
-                width: 120
+                title: "商品名称",
+                key: "materialName",
+                width: 120,
+                render: (h, param) => {
+                    //文本输入框渲染器
+                    let self = this;
+                    return h("Input", {
+                        props: {
+                            type: "text",
+                            value: self.poOrderItems[param.index][param.key]
+                        },
+                        on: {
+                            "on-change" (event) {
+                                let key = param.key;
+                                self.poOrderItems[param.index][key] = event.target.value;
+                            }
+                        }
+                    });
+                }
             },
             {
-                title: '数量',
-                key: 'nnum',
-                width: 120
+                title: "数量",
+                key: "nnum",
+                width: 120,
+                render: (h, param) => {
+                    //文本输入框渲染器
+                    let self = this;
+                    return h("Input", {
+                        props: {
+                            type: "text",
+                            value: self.poOrderItems[param.index][param.key]
+                        },
+                        on: {
+                            "on-change" (event) {
+                                let key = param.key;
+                                self.poOrderItems[param.index][key] = event.target.value;
+                            }
+                        }
+                    });
+                }
             },
             {
-                title: '重量',
-                key: 'nweight',
-                width: 120
+                title: "重量",
+                key: "nweight",
+                width: 120,
+                render: (h, param) => {
+                    //文本输入框渲染器
+                    let self = this;
+                    return h("Input", {
+                        props: {
+                            type: "text",
+                            value: self.poOrderItems[param.index][param.key]
+                        },
+                        on: {
+                            "on-change" (event) {
+                                let key = param.key;
+                                self.poOrderItems[param.index][key] = event.target.value;
+                            }
+                        }
+                    });
+                }
             },
             {
-                title: '单位',
-                key: 'castunitid',
-                width: 120
+                title: "单位",
+                key: "castunitid",
+                width: 120,
+                render: (h, param) => {
+                    //文本输入框渲染器
+                    let self = this;
+                    return h("Input", {
+                        props: {
+                            type: "text",
+                            value: self.poOrderItems[param.index][param.key]
+                        },
+                        on: {
+                            "on-change" (event) {
+                                let key = param.key;
+                                self.poOrderItems[param.index][key] = event.target.value;
+                            }
+                        }
+                    });
+                }
             },
             {
-                title: '含税单价',
-                key: 'nqtorigtaxprice',
-                width: 120
+                title: "含税单价",
+                key: "nqtorigtaxprice",
+                width: 120,
+                render: (h, param) => {
+                    //文本输入框渲染器
+                    let self = this;
+                    return h("Input", {
+                        props: {
+                            type: "text",
+                            value: self.poOrderItems[param.index][param.key]
+                        },
+                        on: {
+                            "on-change" (event) {
+                                let key = param.key;
+                                self.poOrderItems[param.index][key] = event.target.value;
+                            }
+                        }
+                    });
+                }
             },
             {
-                title: '价税合计',
-                key: 'norigtaxmny',
-                width: 120
+                title: "价税合计",
+                key: "norigtaxmny",
+                width: 120,
+                render: (h, param) => {
+                    //文本输入框渲染器
+                    let self = this;
+                    return h("Input", {
+                        props: {
+                            type: "text",
+                            value: self.poOrderItems[param.index][param.key]
+                        },
+                        on: {
+                            "on-change" (event) {
+                                let key = param.key;
+                                self.poOrderItems[param.index][key] = event.target.value;
+                            }
+                        }
+                    });
+                }
             },
             {
-                title: '分类',
-                key: 'marbasclass',
-                width: 120
+                title: "分类",
+                key: "marbasclass",
+                width: 120,
+                render: (h, param) => {
+                    //文本输入框渲染器
+                    let self = this;
+                    return h("Input", {
+                        props: {
+                            type: "text",
+                            value: self.poOrderItems[param.index][param.key]
+                        },
+                        on: {
+                            "on-change" (event) {
+                                let key = param.key;
+                                self.poOrderItems[param.index][key] = event.target.value;
+                            }
+                        }
+                    });
+                }
             },
             {
-                title: '规格',
-                key: 'materialspec',
-                width: 120
+                title: "规格",
+                key: "materialspec",
+                width: 120,
+                render: (h, param) => {
+                    //文本输入框渲染器
+                    let self = this;
+                    return h("Input", {
+                        props: {
+                            type: "text",
+                            value: self.poOrderItems[param.index][param.key]
+                        },
+                        on: {
+                            "on-change" (event) {
+                                let key = param.key;
+                                self.poOrderItems[param.index][key] = event.target.value;
+                            }
+                        }
+                    });
+                }
             },
             {
-                title: '备注',
-                key: 'vmemo',
-                width: 120
-            },
-
-            {
-                title: '操作',
-                key: 'action',
-                width: 160,
-                align: 'center',
-                fixed: 'right',
-                render:
-                    (h, params) => {
-
-                        return h("div", [
-                            h(
-                                "Button", {
-                                    props: {
-                                        type: "primary"
-                                    },
-                                    style: {
-                                        marginRight: "5px"
-                                    },
-                                    on: {
-                                        click: () => {
-                                            this.btnUpdate(params);
-                                        }
-                                    }
-                                },
-                                "编辑"
-                            ),
-                            h(
-                                "Button", {
-                                    props: {
-                                        type: "error"
-                                    },
-                                    on: {
-                                        click: () => {
-                                            this.btnRemove(params);
-                                        }
-                                    }
-                                },
-                                "删除"
-                            )
-                        ]);
-                    }
+                title: "备注",
+                key: "vmemo",
+                width: 120,
+                render: (h, param) => {
+                    //文本输入框渲染器
+                    let self = this;
+                    return h("Input", {
+                        props: {
+                            type: "textarea",
+                            value: self.poOrderItems[param.index][param.key]
+                        },
+                        on: {
+                            "on-change" (event) {
+                                let key = param.key;
+                                self.poOrderItems[param.index][key] = event.target.value;
+                            }
+                        }
+                    });
+                }
             }
         ];
         let queryConditions = [{
@@ -255,11 +274,6 @@ export default {
             pageSize: 10,
             //table表格
             poOrderItemTableColumns: tableColumns,
-            //父子通信属性
-            modalShow: false,
-            modalForm: {},
-            modalRule: {},
-            modalIndex: 0,
             //多选选中的数据
             selectedIndex: [],
             //查询条件参数
@@ -267,8 +281,10 @@ export default {
             //查询条件
             queryField: "",
             //查询字段值
-            queryValue: ""
-        }
+            queryValue: "",
+            //当前编辑行
+            currentRow: {}
+        };
     },
     //子组件
     components: {},
@@ -282,31 +298,9 @@ export default {
         btnAdd() {
             //数据新增
             let self = this;
-            self.modalForm = {};
-            self.modalShow = true;
-        },
-        btnRemove(params) {
-            //单行删除
-            let self = this;
-            self.modalIndex = params.index;
-            //远程持久化数据
-            self.$http.post("/order/poOrderItem/remove/" + params.row.id).then(result => {
-                //计算当前页数
-                //向下取整函数 Math.trunc()
-                //删除页数
-                let removePageCount = Math.trunc(1 / self.pageSize);
-                //最后一页尾数全部删除掉，后退一页
-                if (
-                    self.total % self.pageSize != 0 &&
-                    self.total % self.pageSize == 1 % self.pageSize
-                ) {
-                    removePageCount += 1;
-                }
-                self.current -= removePageCount;
-                //刷新页面数据
-                self.pageRefreshEvent(self.current, self.pageSize);
-                self.$Message.success("删除成功");
-            });
+            //加载新的行到table
+            let param = {};
+            self.poOrderItems.push(param);
         },
         btnListRemove() {
             //批量删除
@@ -330,19 +324,6 @@ export default {
                 //刷新页面数据
                 self.pageRefreshEvent(self.current, self.pageSize);
                 self.$Message.success("批量删除成功");
-            });
-        },
-        btnUpdate(params) {
-            //数据更新
-            let self = this;
-            //显示界面
-            self.modalShow = true;
-            //操作行主键
-            let id = params.row.id;
-            self.modalIndex = params.index;
-            //远程加载数据
-            self.$http.post("/order/poOrderItem/detail/" + id).then(response => {
-                self.modalForm = response.data.data;
             });
         },
         //远程请求数据
@@ -369,46 +350,20 @@ export default {
                 let conditionKey = self.queryField;
                 let conditionValue = self.queryValue;
                 condition[conditionKey] = conditionValue;
-                self.$http.post("/order/poOrderItem/list", {
-                    current: self.current,
-                    size: self.pageSize,
-                    //构造查询条件
-                    condition: condition
-                }).then(response => {
-                    self.poOrderItems = response.data.data.records;
-                    self.total = response.data.data.total;
-                });
+                self.$http
+                    .post("/order/poOrderItem/list", {
+                        current: self.current,
+                        size: self.pageSize,
+                        //构造查询条件
+                        condition: condition
+                    })
+                    .then(response => {
+                        self.poOrderItems = response.data.data.records;
+                        self.total = response.data.data.total;
+                    });
             } else {
                 self.list_poOrderItem(self.current, self.pageSize);
             }
-        },
-        btnPrint() {
-            let self = this;
-            let table = this.$refs.poOrderItemDataTable.$el;
-            /* 这部分代码用来解决生成的图片不清晰的问题 */
-            let tableWidth = table.offsetWidth;
-            let tableHeight = table.offsetHeight;
-            let canvas = document.createElement("canvas");
-            canvas.width = tableWidth * 2;
-            canvas.height = tableHeight * 2;
-            canvas.style.width = tableWidth + "px";
-            canvas.style.height = tableHeight + "px";
-            document.body.appendChild(canvas);
-            var context = canvas.getContext("2d");
-            context.scale(2, 2);
-            /* 这部分代码用来解决生成的图片不清晰的问题 */
-            //曲线救国，先转换成图片，再进行打印
-            html2canvas(table, {
-                // canvas: canvas,
-                onrendered(image) {
-                    let url = image.toDataURL();
-                    printJS({
-                        printable: url,
-                        type: "image",
-                        header: "订单_商品信息信息"
-                    });
-                }
-            });
         },
         modalConfirmEvent() {
             //数据保存
@@ -421,19 +376,23 @@ export default {
                 self.modalForm.id == ""
             ) {
                 // 远程持久化数据-新增
-                self.$http.post("/order/poOrderItem/add", self.modalForm).then(response => {
-                    //刷新数据，跳转到最后一页
-                    self.current = Math.trunc(self.total / self.pageSize) + 1;
-                    self.pageRefreshEvent(self.current, self.pageSize);
-                    self.$Message.info("新增保存成功");
-                });
+                self.$http
+                    .post("/order/poOrderItem/add", self.modalForm)
+                    .then(response => {
+                        //刷新数据，跳转到最后一页
+                        self.current = Math.trunc(self.total / self.pageSize) + 1;
+                        self.pageRefreshEvent(self.current, self.pageSize);
+                        self.$Message.info("新增保存成功");
+                    });
             } else {
                 //远程持久化数据-更新
-                self.$http.post("/order/poOrderItem/update", self.modalForm).then(result => {
-                    //局部更新数据
-                    self.pageRefreshEvent(self.current, self.pageSize);
-                    self.$Message.success("修改保存成功");
-                });
+                self.$http
+                    .post("/order/poOrderItem/update", self.modalForm)
+                    .then(result => {
+                        //局部更新数据
+                        self.pageRefreshEvent(self.current, self.pageSize);
+                        self.$Message.success("修改保存成功");
+                    });
             }
         },
         //跳转页
@@ -473,7 +432,6 @@ export default {
                 self.selectedIndex.push(selection.id);
             }
         }
-
     }
-}
+};
 </script>

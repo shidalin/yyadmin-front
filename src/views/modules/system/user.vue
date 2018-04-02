@@ -190,8 +190,11 @@ export default {
             }
         ];
         let queryConditions = [{
-            value: "",
-            label: ""
+            value: "user_code",
+            label: "用户编码"
+        }, {
+            value: "user_name",
+            label: "用户名称"
         }];
         return {
             users: [],
