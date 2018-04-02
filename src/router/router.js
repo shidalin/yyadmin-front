@@ -58,7 +58,7 @@ export const otherRouter = {
     children: [{
             path: 'home',
             title: {
-                i18n: 'home'
+                i18n: '主页'
             },
             name: 'home_index',
             component: () =>

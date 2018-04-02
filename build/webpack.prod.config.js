@@ -18,7 +18,7 @@ fs.open('./build/env.js', 'w', function(err, fd) {
 
 module.exports = merge(webpackBaseConfig, {
     output: {
-        publicPath: 'http://localhost/yyadmin/dist/',  // 修改 https://iv...admin 这部分为你的服务器域名 
+        publicPath: 'http://116.62.19.135/yyadmin-front/dist/',  // 修改 https://iv...admin 这部分为你的服务器域名 
         filename: '[name].[hash].js',
         chunkFilename: '[name].[hash].chunk.js'
     },
@@ -57,7 +57,7 @@ module.exports = merge(webpackBaseConfig, {
         // }),
         new CopyWebpackPlugin([
             {
-                from: 'td_icon.ico'
+                from: 'yy_icon.ico'
             },
             {
                 from: 'src/styles/fonts',
@@ -73,7 +73,7 @@ module.exports = merge(webpackBaseConfig, {
         }),
         new HtmlWebpackPlugin({
             title: 'yyadmin v' + package.version,
-            favicon: './td_icon.ico',
+            favicon: './yy_icon.ico',
             filename: '../index.html',
             template: '!!ejs-loader!./src/template/index.ejs',
             inject: false

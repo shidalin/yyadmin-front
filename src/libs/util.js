@@ -13,9 +13,9 @@ util.title = function (title) {
 };
 
 const ajaxUrl = env === 'development' ?
-    ' http://127.0.0.1:8888/api' :
+    'http://127.0.0.1:8888/api' :
     env === 'production' ?
-    'https://www.url.com' :
+    '/apis/api' :
     'https://debug.url.com';
 
 util.ajax = axios.create({
