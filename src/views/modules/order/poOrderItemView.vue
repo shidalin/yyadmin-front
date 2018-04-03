@@ -1,5 +1,9 @@
 <template>
 <div>
+    <p>
+        <Icon type="ios-list"></Icon>
+        订单明细
+    </p>
     <div class="layout-button">
         <Row>
             <Col span="10">
@@ -11,10 +15,6 @@
             </Input>
             </Col>
             <Col span="12" offset="1">
-            <div>
-                <Button type="success" @click="btnAdd">增行</Button>
-                <Button type="error" @click="btnListRemove">删行</Button>
-            </div>
             </Col>
         </Row>
     </div>
@@ -115,11 +115,6 @@ export default {
             pageSize: 10,
             //table表格
             poOrderItemTableColumns: tableColumns,
-            //父子通信属性
-            modalShow: false,
-            modalForm: {},
-            modalRule: {},
-            modalIndex: 0,
             //多选选中的数据
             selectedIndex: [],
             //查询条件参数
@@ -145,45 +140,19 @@ export default {
         self.list_poOrderItem(self.current, self.pageSize);
     },
     methods: {
-        btnAdd() {
-            //数据新增
-            let self = this;
-            let addParam = {};
-            self.poOrderItems.push(addParam);
-        },
-        btnListRemove() {
-            //批量删除
-            let self = this;
-            //删除
-            let ids = self.selectedIndex;
-            //远程持久化数据
-            self.$http.post("/order/poOrderItem/remove", ids).then(result => {
-                //计算当前页数
-                //向下取整函数 Math.trunc()
-                //删除页数
-                let removePageCount = Math.trunc(ids.length / self.pageSize);
-                //最后一页尾数全部删除掉，后退一页
-                if (
-                    self.total % self.pageSize != 0 &&
-                    self.total % self.pageSize == ids.length % self.pageSize
-                ) {
-                    removePageCount += 1;
-                }
-                self.current -= removePageCount;
-                //刷新页面数据
-                self.pageRefreshEvent(self.current, self.pageSize);
-                self.$Message.success("批量删除成功");
-            });
-        },
         //远程请求数据
         list_poOrderItem(current, pageSize) {
             //分页查询
             let self = this;
+            //查询条件，关联主表主键
+            let condition = {};
+            condition['pid'] = parentRow.id;
             //远程请求数据
             self.$http
                 .post("/order/poOrderItem/list", {
                     current: self.current,
-                    size: self.pageSize
+                    size: self.pageSize,
+                    condition: condition
                 })
                 .then(response => {
                     self.poOrderItems = response.data.data.records;
@@ -199,6 +168,7 @@ export default {
                 let conditionKey = self.queryField;
                 let conditionValue = self.queryValue;
                 condition[conditionKey] = conditionValue;
+                condition['pid'] = parentRow.id;
                 self.$http.post("/order/poOrderItem/list", {
                     current: self.current,
                     size: self.pageSize,
@@ -210,32 +180,6 @@ export default {
                 });
             } else {
                 self.list_poOrderItem(self.current, self.pageSize);
-            }
-        },
-        modalConfirmEvent() {
-            //数据保存
-            let self = this;
-            self.modalShow = false;
-            //modal确认事件
-            if (
-                self.modalForm.id == undefined ||
-                self.modalForm.id == null ||
-                self.modalForm.id == ""
-            ) {
-                // 远程持久化数据-新增
-                self.$http.post("/order/poOrderItem/add", self.modalForm).then(response => {
-                    //刷新数据，跳转到最后一页
-                    self.current = Math.trunc(self.total / self.pageSize) + 1;
-                    self.pageRefreshEvent(self.current, self.pageSize);
-                    self.$Message.info("新增保存成功");
-                });
-            } else {
-                //远程持久化数据-更新
-                self.$http.post("/order/poOrderItem/update", self.modalForm).then(result => {
-                    //局部更新数据
-                    self.pageRefreshEvent(self.current, self.pageSize);
-                    self.$Message.success("修改保存成功");
-                });
             }
         },
         //跳转页

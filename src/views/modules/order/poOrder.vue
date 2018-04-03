@@ -21,7 +21,7 @@
     </div>
 
     <!--数据表格  -->
-    <Table :data="poOrders" :columns="poOrderTableColumns" height="500" @on-selection-change="selectionChange" stripe border ref="poOrderDataTable"></Table>
+    <Table :data="poOrders" :columns="poOrderTableColumns" height="700" @on-selection-change="selectionChange" stripe border ref="poOrderDataTable"></Table>
     <!--分页  -->
     <div style="margin: 10px;overflow: hidden">
         <div style="float: right;">
