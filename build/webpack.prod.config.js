@@ -18,7 +18,7 @@ fs.open('./build/env.js', 'w', function(err, fd) {
 
 module.exports = merge(webpackBaseConfig, {
     output: {
-        publicPath: 'http://116.62.19.135/yyadmin-front/dist/',  // 修改 https://iv...admin 这部分为你的服务器域名 
+        publicPath: 'http://www.yyadmin.xyz/',  // 修改 https://iv...admin 这部分为你的服务器域名 
         filename: '[name].[hash].js',
         chunkFilename: '[name].[hash].chunk.js'
     },
