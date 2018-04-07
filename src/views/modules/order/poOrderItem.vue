@@ -59,12 +59,14 @@ export default {
                     return h("Input", {
                         props: {
                             type: "text",
-                            value: self.poOrderItems[param.index][param.key]
+                            value: self.poOrderItems[param.index][param.column.key]
                         },
                         on: {
                             "on-change" (event) {
-                                let key = param.key;
+                                let key = param.column.key;
                                 self.poOrderItems[param.index][key] = event.target.value;
+                                //父子通信 显示触发更新事件，通知父组件数据状态改变
+                                self.$emit('update:itemData', self.poOrderItems);
                             }
                         }
                     });
@@ -80,12 +82,13 @@ export default {
                     return h("Input", {
                         props: {
                             type: "text",
-                            value: self.poOrderItems[param.index][param.key]
+                            value: self.poOrderItems[param.index][param.column.key]
                         },
                         on: {
                             "on-change" (event) {
-                                let key = param.key;
+                                let key = param.column.key;
                                 self.poOrderItems[param.index][key] = event.target.value;
+                                self.$emit('update:itemData', self.poOrderItems);
                             }
                         }
                     });
@@ -101,12 +104,13 @@ export default {
                     return h("Input", {
                         props: {
                             type: "text",
-                            value: self.poOrderItems[param.index][param.key]
+                            value: self.poOrderItems[param.index][param.column.key]
                         },
                         on: {
                             "on-change" (event) {
-                                let key = param.key;
+                                let key = param.column.key;
                                 self.poOrderItems[param.index][key] = event.target.value;
+                                self.$emit('update:itemData', self.poOrderItems);
                             }
                         }
                     });
@@ -122,12 +126,13 @@ export default {
                     return h("Input", {
                         props: {
                             type: "text",
-                            value: self.poOrderItems[param.index][param.key]
+                            value: self.poOrderItems[param.index][param.column.key]
                         },
                         on: {
                             "on-change" (event) {
-                                let key = param.key;
+                                let key = param.column.key;
                                 self.poOrderItems[param.index][key] = event.target.value;
+                                self.$emit('update:itemData', self.poOrderItems);
                             }
                         }
                     });
@@ -143,12 +148,13 @@ export default {
                     return h("Input", {
                         props: {
                             type: "text",
-                            value: self.poOrderItems[param.index][param.key]
+                            value: self.poOrderItems[param.index][param.column.key]
                         },
                         on: {
                             "on-change" (event) {
-                                let key = param.key;
+                                let key = param.column.key;
                                 self.poOrderItems[param.index][key] = event.target.value;
+                                self.$emit('update:itemData', self.poOrderItems);
                             }
                         }
                     });
@@ -164,12 +170,13 @@ export default {
                     return h("Input", {
                         props: {
                             type: "text",
-                            value: self.poOrderItems[param.index][param.key]
+                            value: self.poOrderItems[param.index][param.column.key]
                         },
                         on: {
                             "on-change" (event) {
-                                let key = param.key;
+                                let key = param.column.key;
                                 self.poOrderItems[param.index][key] = event.target.value;
+                                self.$emit('update:itemData', self.poOrderItems);
                             }
                         }
                     });
@@ -185,12 +192,13 @@ export default {
                     return h("Input", {
                         props: {
                             type: "text",
-                            value: self.poOrderItems[param.index][param.key]
+                            value: self.poOrderItems[param.index][param.column.key]
                         },
                         on: {
                             "on-change" (event) {
-                                let key = param.key;
+                                let key = param.column.key;
                                 self.poOrderItems[param.index][key] = event.target.value;
+                                self.$emit('update:itemData', self.poOrderItems);
                             }
                         }
                     });
@@ -206,12 +214,13 @@ export default {
                     return h("Input", {
                         props: {
                             type: "text",
-                            value: self.poOrderItems[param.index][param.key]
+                            value: self.poOrderItems[param.index][param.column.key]
                         },
                         on: {
                             "on-change" (event) {
-                                let key = param.key;
+                                let key = param.column.key;
                                 self.poOrderItems[param.index][key] = event.target.value;
+                                self.$emit('update:itemData', self.poOrderItems);
                             }
                         }
                     });
@@ -227,12 +236,13 @@ export default {
                     return h("Input", {
                         props: {
                             type: "text",
-                            value: self.poOrderItems[param.index][param.key]
+                            value: self.poOrderItems[param.index][param.column.key]
                         },
                         on: {
                             "on-change" (event) {
-                                let key = param.key;
+                                let key = param.column.key;
                                 self.poOrderItems[param.index][key] = event.target.value;
+                                self.$emit('update:itemData', self.poOrderItems);
                             }
                         }
                     });
@@ -248,12 +258,13 @@ export default {
                     return h("Input", {
                         props: {
                             type: "textarea",
-                            value: self.poOrderItems[param.index][param.key]
+                            value: self.poOrderItems[param.index][param.column.key]
                         },
                         on: {
                             "on-change" (event) {
-                                let key = param.key;
+                                let key = param.column.key;
                                 self.poOrderItems[param.index][key] = event.target.value;
+                                self.$emit('update:itemData', self.poOrderItems);
                             }
                         }
                     });
@@ -286,13 +297,16 @@ export default {
             currentRow: {}
         };
     },
+    props: {
+        itemData: Array
+    },
     //子组件
     components: {},
     computed: {},
     //钩子方法，页面渲染结束后加载
     created() {
         let self = this;
-        self.list_poOrderItem(self.current, self.pageSize);
+        // self.list_poOrderItem(self.current, self.pageSize);
     },
     methods: {
         btnAdd() {

@@ -47,13 +47,13 @@ export default {
             {
                 title: '主表主键',
                 key: 'pid',
-                width: 120
+                width: 120,
+                hidden: true
             },
             {
                 title: '商品编码',
                 key: 'materialId',
-                width: 120,
-                editable: true
+                width: 120
             },
             {
                 title: '商品名称',
@@ -102,11 +102,16 @@ export default {
             }
         ];
         let queryConditions = [{
-            value: "",
-            label: ""
+            value: "material_id",
+            label: "商品编码"
+        }, {
+            value: "material_name",
+            label: "商品名称"
         }];
         return {
             poOrderItems: [],
+            //用prop进行初始化，当做局部变量使用
+            parentRowID: this.parentRow.id,
             //数据总数
             total: 0,
             //当前页码
@@ -126,17 +131,14 @@ export default {
 
         }
     },
-    props: {
-        //父子组件通信
-        //主表行
-        parentRow: {}
-    },
+    props: ['parentRow'],
     //子组件
     components: {},
     computed: {},
     //钩子方法，页面渲染结束后加载
     created() {
         let self = this;
+        //table的数据初始化
         self.list_poOrderItem(self.current, self.pageSize);
     },
     methods: {
@@ -146,7 +148,7 @@ export default {
             let self = this;
             //查询条件，关联主表主键
             let condition = {};
-            condition['pid'] = parentRow.id;
+            condition['pid'] = self.parentRowID;
             //远程请求数据
             self.$http
                 .post("/order/poOrderItem/list", {
@@ -168,7 +170,7 @@ export default {
                 let conditionKey = self.queryField;
                 let conditionValue = self.queryValue;
                 condition[conditionKey] = conditionValue;
-                condition['pid'] = parentRow.id;
+                condition['pid'] = self.parentRowID;
                 self.$http.post("/order/poOrderItem/list", {
                     current: self.current,
                     size: self.pageSize,

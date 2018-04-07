@@ -144,12 +144,18 @@
                 </Row>
                 <Row class="margin-top-10">
                     <Card>
-                        <p>
-                            <Icon type="ios-list"></Icon>
-                            订单明细
-                        </p>
                         <Row>
-                            <poOrderItem></poOrderItem>
+                            <p>
+                                <Icon type="ios-list"></Icon>
+                                订单明细
+                            </p>
+                        </Row>
+                        <Row>
+                            &nbsp;
+                        </Row>
+                        <Row>
+                            <!-- 主子通信 数据双向绑定 -->
+                            <poOrderItem :itemData.sync="poOrderItems"></poOrderItem>
                         </Row>
                     </Card>
                 </Row>
@@ -172,6 +178,7 @@ export default {
                 render: (h, params) => {
                     return h(poOrderItemView, {
                         props: {
+                            // 列表状态下父子通信，传递主表数据
                             parentRow: params.row
                         }
                     })
@@ -248,16 +255,15 @@ export default {
                 key: 'vmemo',
                 width: 120
             },
-
             {
                 title: '操作',
                 key: 'action',
                 width: 160,
                 align: 'center',
-                fixed: 'right',
+                // 固定列
+                fixed: '',
                 render:
                     (h, params) => {
-
                         return h("div", [
                             h(
                                 "Button", {
@@ -293,11 +299,17 @@ export default {
             }
         ];
         let queryConditions = [{
-            value: "",
-            label: ""
+            value: "order_code",
+            label: "订单编号"
+        }, {
+            value: "dealer_name",
+            label: "经销商名称"
         }];
         return {
+            //列表状态下数据
             poOrders: [],
+            //子表数据
+            poOrderItems: [],
             //数据总数
             total: 0,
             //当前页码
@@ -306,8 +318,8 @@ export default {
             pageSize: 10,
             //table表格
             poOrderTableColumns: tableColumns,
-            //父子通信属性
             modalShow: false,
+            //表头数据
             modalForm: {},
             modalRule: {},
             modalIndex: 0,
@@ -474,8 +486,16 @@ export default {
                 self.modalForm.id == null ||
                 self.modalForm.id == ""
             ) {
+                //主表数据测试
+                // console.log(self.modalForm);
+                //子表数据测试
+                // console.log(self.poOrderItems);
+                // 构造主子表DTO
                 // 远程持久化数据-新增
-                self.$http.post("/order/poOrder/add", self.modalForm).then(response => {
+                self.$http.post("/order/poOrder/add", {
+                    parentEntity: self.modalForm,
+                    childEntityList: self.poOrderItems
+                }).then(response => {
                     //刷新数据，跳转到最后一页
                     self.current = Math.trunc(self.total / self.pageSize) + 1;
                     self.pageRefreshEvent(self.current, self.pageSize);
@@ -489,6 +509,8 @@ export default {
                     self.$Message.success("修改保存成功");
                 });
             }
+            //清空缓存数据
+            self.poOrderItems = [];
         },
         //跳转页
         changePage(current) {
@@ -527,7 +549,6 @@ export default {
                 self.selectedIndex.push(selection.id);
             }
         }
-
     }
 }
 </script>
