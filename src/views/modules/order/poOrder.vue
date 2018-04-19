@@ -154,8 +154,8 @@
                             &nbsp;
                         </Row>
                         <Row>
-                            <!-- 主子通信 数据双向绑定 -->
-                            <poOrderItem :itemData.sync="poOrderItems"></poOrderItem>
+                            <!-- 主子通信 sync 数据双向绑定 -->
+                            <poOrderItem :propItemData.sync="poOrderItems" :propItemPageHidden="itemPageHidden" :propParentRowID="parentRowID"></poOrderItem>
                         </Row>
                     </Card>
                 </Row>
@@ -310,6 +310,8 @@ export default {
             poOrders: [],
             //子表数据
             poOrderItems: [],
+            //编辑态子组件分页组件是否显示
+            itemPageHidden: true,
             //数据总数
             total: 0,
             //当前页码
@@ -330,7 +332,9 @@ export default {
             //查询条件
             queryField: "",
             //查询字段值
-            queryValue: ""
+            queryValue: "",
+            //父表主键
+            parentRowID: ""
         }
     },
     //子组件
@@ -350,6 +354,12 @@ export default {
             let self = this;
             self.modalForm = {};
             self.modalShow = true;
+            //更新态子组件分组组件是否显示设置
+            self.itemPageHidden = true;
+            //传递子表数据
+            self.parentRowID = "";
+            //清空缓存数据
+            self.poOrderItems = [];
         },
         btnRemove(params) {
             //单行删除
@@ -403,10 +413,14 @@ export default {
             let self = this;
             //显示界面
             self.modalShow = true;
+            //更新态子组件分组组件是否显示设置
+            self.itemPageHidden = false;
             //操作行主键
             let id = params.row.id;
             self.modalIndex = params.index;
-            //远程加载数据
+            //传递子表数据
+            self.parentRowID = id;
+            //远程加载主表数据
             self.$http.post("/order/poOrder/detail/" + id).then(response => {
                 self.modalForm = response.data.data;
             });
@@ -486,10 +500,6 @@ export default {
                 self.modalForm.id == null ||
                 self.modalForm.id == ""
             ) {
-                //主表数据测试
-                // console.log(self.modalForm);
-                //子表数据测试
-                // console.log(self.poOrderItems);
                 // 构造主子表DTO
                 // 远程持久化数据-新增
                 self.$http.post("/order/poOrder/add", {

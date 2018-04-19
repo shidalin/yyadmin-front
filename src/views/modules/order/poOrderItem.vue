@@ -3,12 +3,14 @@
     <div class="layout-button">
         <Row>
             <Col span="10">
-            <Input v-model="queryValue">
-            <Select slot="prepend" style="width: 80px" v-model="queryField">
+            <div :hidden="itemPageHidden">
+                <Input v-model="queryValue">
+                <Select slot="prepend" style="width: 80px" v-model="queryField">
                     <Option v-for="item in queryConditions" :value="item.value" :label="item.label"></Option>
                 </Select>
-            <Button slot="append" icon="ios-search" type="primary" @click="btnQuery"></Button>
-            </Input>
+                <Button slot="append" icon="ios-search" type="primary" @click="btnQuery"></Button>
+                </Input>
+            </div>
             </Col>
             <Col span="12" offset="1">
             <div>
@@ -21,7 +23,7 @@
     <!--数据表格  -->
     <Table :data="poOrderItems" :columns="poOrderItemTableColumns" height="500" @on-selection-change="selectionChange" stripe border ref="poOrderItemDataTable"></Table>
     <!--分页  -->
-    <div style="margin: 10px;overflow: hidden">
+    <div style="margin: 10px;overflow: hidden;" :hidden="itemPageHidden">
         <div style="float: right;">
             <!--  show-elevator 跳转页-->
             <!-- show-sizer 每页显示多少条-->
@@ -66,7 +68,7 @@ export default {
                                 let key = param.column.key;
                                 self.poOrderItems[param.index][key] = event.target.value;
                                 //父子通信 显示触发更新事件，通知父组件数据状态改变
-                                self.$emit('update:itemData', self.poOrderItems);
+                                self.$emit('update:propItemData', self.poOrderItems);
                             }
                         }
                     });
@@ -88,7 +90,7 @@ export default {
                             "on-change" (event) {
                                 let key = param.column.key;
                                 self.poOrderItems[param.index][key] = event.target.value;
-                                self.$emit('update:itemData', self.poOrderItems);
+                                self.$emit('update:propItemData', self.poOrderItems);
                             }
                         }
                     });
@@ -110,7 +112,7 @@ export default {
                             "on-change" (event) {
                                 let key = param.column.key;
                                 self.poOrderItems[param.index][key] = event.target.value;
-                                self.$emit('update:itemData', self.poOrderItems);
+                                self.$emit('update:propItemData', self.poOrderItems);
                             }
                         }
                     });
@@ -132,7 +134,7 @@ export default {
                             "on-change" (event) {
                                 let key = param.column.key;
                                 self.poOrderItems[param.index][key] = event.target.value;
-                                self.$emit('update:itemData', self.poOrderItems);
+                                self.$emit('update:propItemData', self.poOrderItems);
                             }
                         }
                     });
@@ -154,7 +156,7 @@ export default {
                             "on-change" (event) {
                                 let key = param.column.key;
                                 self.poOrderItems[param.index][key] = event.target.value;
-                                self.$emit('update:itemData', self.poOrderItems);
+                                self.$emit('update:propItemData', self.poOrderItems);
                             }
                         }
                     });
@@ -176,7 +178,7 @@ export default {
                             "on-change" (event) {
                                 let key = param.column.key;
                                 self.poOrderItems[param.index][key] = event.target.value;
-                                self.$emit('update:itemData', self.poOrderItems);
+                                self.$emit('update:propItemData', self.poOrderItems);
                             }
                         }
                     });
@@ -198,7 +200,7 @@ export default {
                             "on-change" (event) {
                                 let key = param.column.key;
                                 self.poOrderItems[param.index][key] = event.target.value;
-                                self.$emit('update:itemData', self.poOrderItems);
+                                self.$emit('update:propItemData', self.poOrderItems);
                             }
                         }
                     });
@@ -220,7 +222,7 @@ export default {
                             "on-change" (event) {
                                 let key = param.column.key;
                                 self.poOrderItems[param.index][key] = event.target.value;
-                                self.$emit('update:itemData', self.poOrderItems);
+                                self.$emit('update:propItemData', self.poOrderItems);
                             }
                         }
                     });
@@ -242,7 +244,7 @@ export default {
                             "on-change" (event) {
                                 let key = param.column.key;
                                 self.poOrderItems[param.index][key] = event.target.value;
-                                self.$emit('update:itemData', self.poOrderItems);
+                                self.$emit('update:propItemData', self.poOrderItems);
                             }
                         }
                     });
@@ -264,7 +266,7 @@ export default {
                             "on-change" (event) {
                                 let key = param.column.key;
                                 self.poOrderItems[param.index][key] = event.target.value;
-                                self.$emit('update:itemData', self.poOrderItems);
+                                self.$emit('update:propItemData', self.poOrderItems);
                             }
                         }
                     });
@@ -277,6 +279,8 @@ export default {
         }];
         return {
             poOrderItems: [],
+            //父子通信，单向数据传输，用父组件传递的prop进行数据初始化
+            //  parentRowID: this.propParentRowID,
             //数据总数
             total: 0,
             //当前页码
@@ -297,16 +301,38 @@ export default {
             currentRow: {}
         };
     },
+    watch: {
+        parentRowID: function(val, oldVal) {
+            let self = this;
+            if (val !== "") {
+                //修改状态，加载子表数据
+                self.list_poOrderItem(self.current, self.pageSize);
+            } else {
+                // 新增状态下清空数据
+                self.poOrderItems = [];
+            }
+        }
+    },
     props: {
-        itemData: Array
+        propItemData: Array,
+        propItemPageHidden: Boolean,
+        propParentRowID: String
     },
     //子组件
     components: {},
-    computed: {},
+    computed: {
+        itemPageHidden: function() {
+            let self = this;
+            return self.propItemPageHidden;
+        },
+        parentRowID: function() {
+            let self = this;
+            return self.propParentRowID;
+        }
+    },
     //钩子方法，页面渲染结束后加载
     created() {
         let self = this;
-        // self.list_poOrderItem(self.current, self.pageSize);
     },
     methods: {
         btnAdd() {
@@ -322,33 +348,34 @@ export default {
             //删除
             let ids = self.selectedIndex;
             //远程持久化数据
-            self.$http.post("/order/poOrderItem/remove", ids).then(result => {
-                //计算当前页数
-                //向下取整函数 Math.trunc()
-                //删除页数
-                let removePageCount = Math.trunc(ids.length / self.pageSize);
-                //最后一页尾数全部删除掉，后退一页
-                if (
-                    self.total % self.pageSize != 0 &&
-                    self.total % self.pageSize == ids.length % self.pageSize
-                ) {
-                    removePageCount += 1;
-                }
-                self.current -= removePageCount;
-                //刷新页面数据
-                self.pageRefreshEvent(self.current, self.pageSize);
-                self.$Message.success("批量删除成功");
-            });
+            //界面数据处理
+            //向下取整函数 Math.trunc()
+            //删除页数
+            let removePageCount = Math.trunc(ids.length / self.pageSize);
+            //最后一页尾数全部删除掉，后退一页
+            if (
+                self.total % self.pageSize != 0 &&
+                self.total % self.pageSize == ids.length % self.pageSize
+            ) {
+                removePageCount += 1;
+            }
+            self.current -= removePageCount;
+            //刷新页面数据
+            self.pageRefreshEvent(self.current, self.pageSize);
         },
         //远程请求数据
         list_poOrderItem(current, pageSize) {
             //分页查询
             let self = this;
+            //查询条件，关联主表主键
+            let condition = {};
+            condition['pid'] = self.parentRowID;
             //远程请求数据
             self.$http
                 .post("/order/poOrderItem/list", {
                     current: self.current,
-                    size: self.pageSize
+                    size: self.pageSize,
+                    condition: condition
                 })
                 .then(response => {
                     self.poOrderItems = response.data.data.records;
@@ -379,43 +406,12 @@ export default {
                 self.list_poOrderItem(self.current, self.pageSize);
             }
         },
-        modalConfirmEvent() {
-            //数据保存
-            let self = this;
-            self.modalShow = false;
-            //modal确认事件
-            if (
-                self.modalForm.id == undefined ||
-                self.modalForm.id == null ||
-                self.modalForm.id == ""
-            ) {
-                // 远程持久化数据-新增
-                self.$http
-                    .post("/order/poOrderItem/add", self.modalForm)
-                    .then(response => {
-                        //刷新数据，跳转到最后一页
-                        self.current = Math.trunc(self.total / self.pageSize) + 1;
-                        self.pageRefreshEvent(self.current, self.pageSize);
-                        self.$Message.info("新增保存成功");
-                    });
-            } else {
-                //远程持久化数据-更新
-                self.$http
-                    .post("/order/poOrderItem/update", self.modalForm)
-                    .then(result => {
-                        //局部更新数据
-                        self.pageRefreshEvent(self.current, self.pageSize);
-                        self.$Message.success("修改保存成功");
-                    });
-            }
-        },
         //跳转页
         changePage(current) {
             //跳转页
             let self = this;
             self.current = current;
             self.list_poOrderItem(self.current, self.pageSize);
-            this.list_poOrderItem(this.current, this.pageSize);
         },
         //切换每页条数
         changePageSize(pageSize) {
@@ -423,10 +419,6 @@ export default {
             let self = this;
             self.pageSize = pageSize;
             self.list_poOrderItem(self.current, self.pageSize);
-        },
-        modalClosedEvent() {
-            //modal关闭事件
-            this.modalShow = false;
         },
         pageRefreshEvent(current, pageSize) {
             //数据刷新
@@ -440,10 +432,10 @@ export default {
             self.selectedIndex = [];
             if (selection instanceof Array) {
                 selection.forEach(function(v, k) {
-                    self.selectedIndex.push(v.id);
+                    self.selectedIndex.push(v);
                 });
             } else {
-                self.selectedIndex.push(selection.id);
+                self.selectedIndex.push(selection);
             }
         }
     }

@@ -80,7 +80,7 @@ export default {
               Cookies.set("menus", response.data.data.menus);
               self.$store.commit(
                 "setAvator",
-                "../images/avator.jpg"
+                "http://www.yyadmin.xyz/images/avator.jpg"
               );
               if (self.form.userName === "admin") {
                 Cookies.set("access", 0);
